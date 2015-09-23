@@ -1,9 +1,9 @@
-#include "subdivisionform.h"
+#include "typeofworkform.h"
 #include <QtSql>
 #include "numprefix.h"
 #include "fordelete.h"
 
-SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) :
+TypeOfWorkForm::TypeOfWorkForm(QString id, QWidget *parent, bool onlyForRead) :
     QDialog(parent)
 {
     readSettings();
@@ -19,6 +19,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
     saveButton = new QPushButton(tr("Save"));
     connect(saveButton,SIGNAL(clicked()),this,SLOT(editRecord()));
     saveButton->setToolTip(tr("Save And Close Button"));
+    saveButton->setDefault(true);
 
     cancelButton = new QPushButton(tr("Cancel"));
     cancelButton->setDefault(true);
@@ -32,7 +33,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
 
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("SELECT subdivisionname FROM subdivision WHERE subdivisionid = :id");
+        query.prepare("SELECT typeofworkname FROM typeofwork WHERE typeofworkid = :id");
         query.bindValue(":id",indexTemp);
         query.exec();
         while(query.next()){
@@ -52,7 +53,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
 
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Subdivision"));
+    setWindowTitle(tr("Type Of Work"));
 
     exchangeFile.setFileName("exchange.txt");
     if(!exchangeFile.isOpen()){
@@ -60,7 +61,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
     }
 }
 
-void SubdivisionForm::editRecord()
+void TypeOfWorkForm::editRecord()
 {
     QTextStream stream(&exchangeFile);
     QString line;
@@ -69,37 +70,37 @@ void SubdivisionForm::editRecord()
     }
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("UPDATE subdivision SET subdivisionname = :name"
-                      " WHERE subdivisionid = :id");
+        query.prepare("UPDATE typeofwork SET typeofworkname = :name"
+                      " WHERE typeofworkid = :id");
         query.bindValue(":name",editName->text());
         query.bindValue(":id",indexTemp);
         query.exec();
-        line += "UPDATE subdivision SET subdivisionname = '";
+        line += "UPDATE typeofwork SET typeofworkname = '";
         line += editName->text().toUtf8();
-        line += "' WHERE subdivisionid = '";
+        line += "' WHERE typeofworkid = '";
         line += indexTemp;
         line += "'";
         line += "\r\n";
         stream<<line;
     }else{
         QSqlQuery query;
-        query.prepare("SELECT * FROM subdivision WHERE subdivisionname = :name");
+        query.prepare("SELECT * FROM typeofwork WHERE typeofworkname = :name");
         query.bindValue(":name",editName->text().simplified());
         query.exec();
         query.next();
         if(!query.isValid()){
             NumPrefix numPrefix(this);
-            indexTemp = numPrefix.getPrefix("subdivision");
+            indexTemp = numPrefix.getPrefix("typeofwork");
             if(indexTemp == ""){
                 close();
             }else{
                 QSqlQuery query;
-                query.prepare("INSERT INTO subdivision (subdivisionid, subdivisionname) "
+                query.prepare("INSERT INTO typeofwork (typeofworkid, typeofworkname) "
                               "VALUES(:id, :name)");
                 query.bindValue(":id",indexTemp);
                 query.bindValue(":name",editName->text().simplified());
                 query.exec();
-                line += "INSERT INTO subdivision (subdivisionid, subdivisionname) VALUES('";
+                line += "INSERT INTO typeofwork (typeofworkid, typeofworkname) VALUES('";
                 line += indexTemp;
                 line += "', '";
                 line += editName->text().toUtf8();
@@ -117,9 +118,9 @@ void SubdivisionForm::editRecord()
     close();
 }
 
-void SubdivisionForm::deleteRecord()
+void TypeOfWorkForm::deleteRecord()
 {
-    ForDelete forDelete(indexTemp,"subdivision",this);
+    ForDelete forDelete(indexTemp,"typeofwork",this);
     forDelete.result();
     forDelete.deleteOnDefault();
     QTextStream stream(&exchangeFile);
@@ -128,32 +129,32 @@ void SubdivisionForm::deleteRecord()
         stream.readLine();
     }
     QSqlQuery query;
-    query.prepare("DELETE FROM subdivision WHERE subdivisionid = :id");
+    query.prepare("DELETE FROM typeofwork WHERE typeofworkid = :id");
     query.bindValue(":id",indexTemp);
     query.exec();
     query.next();
-    line += "DELETE FROM subdivision WHERE subdivisionid = '";
+    line += "DELETE FROM typeofwork WHERE typeofworkid = '";
     line += indexTemp;
     line += "'";
     line += "\r\n";
     stream<<line;
 }
 
-void SubdivisionForm::done(int result)
+void TypeOfWorkForm::done(int result)
 {
     exchangeFile.close();
     writeSettings();
     QDialog::done(result);
 }
 
-void SubdivisionForm::readSettings()
+void TypeOfWorkForm::readSettings()
 {
     QSettings settings("AO_Batrakov_Inc.", "MSO");
-    restoreGeometry(settings.value("Subdivision").toByteArray());
+    restoreGeometry(settings.value("Typeofwork").toByteArray());
 }
 
-void SubdivisionForm::writeSettings()
+void TypeOfWorkForm::writeSettings()
 {
     QSettings settings("AO_Batrakov_Inc.", "MSO");
-    settings.setValue("Subdivision", saveGeometry());
+    settings.setValue("Typeofwork", saveGeometry());
 }

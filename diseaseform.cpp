@@ -1,9 +1,9 @@
-#include "subdivisionform.h"
+#include "diseaseform.h"
 #include <QtSql>
 #include "numprefix.h"
 #include "fordelete.h"
 
-SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) :
+DiseaseForm::DiseaseForm(QString id, QWidget *parent, bool onlyForRead) :
     QDialog(parent)
 {
     readSettings();
@@ -32,7 +32,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
 
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("SELECT subdivisionname FROM subdivision WHERE subdivisionid = :id");
+        query.prepare("SELECT diseasename FROM disease WHERE diseaseid = :id");
         query.bindValue(":id",indexTemp);
         query.exec();
         while(query.next()){
@@ -52,7 +52,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
 
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Subdivision"));
+    setWindowTitle(tr("Disease"));
 
     exchangeFile.setFileName("exchange.txt");
     if(!exchangeFile.isOpen()){
@@ -60,7 +60,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
     }
 }
 
-void SubdivisionForm::editRecord()
+void DiseaseForm::editRecord()
 {
     QTextStream stream(&exchangeFile);
     QString line;
@@ -69,37 +69,37 @@ void SubdivisionForm::editRecord()
     }
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("UPDATE subdivision SET subdivisionname = :name"
-                      " WHERE subdivisionid = :id");
+        query.prepare("UPDATE disease SET diseasename = :name"
+                      " WHERE diseaseid = :id");
         query.bindValue(":name",editName->text());
         query.bindValue(":id",indexTemp);
         query.exec();
-        line += "UPDATE subdivision SET subdivisionname = '";
+        line += "UPDATE disease SET diseasename = '";
         line += editName->text().toUtf8();
-        line += "' WHERE subdivisionid = '";
+        line += "' WHERE diseaseid = '";
         line += indexTemp;
         line += "'";
         line += "\r\n";
         stream<<line;
     }else{
         QSqlQuery query;
-        query.prepare("SELECT * FROM subdivision WHERE subdivisionname = :name");
+        query.prepare("SELECT * FROM disease WHERE diseasename = :name");
         query.bindValue(":name",editName->text().simplified());
         query.exec();
         query.next();
         if(!query.isValid()){
             NumPrefix numPrefix(this);
-            indexTemp = numPrefix.getPrefix("subdivision");
+            indexTemp = numPrefix.getPrefix("disease");
             if(indexTemp == ""){
                 close();
             }else{
                 QSqlQuery query;
-                query.prepare("INSERT INTO subdivision (subdivisionid, subdivisionname) "
+                query.prepare("INSERT INTO disease (diseaseid, diseasename) "
                               "VALUES(:id, :name)");
                 query.bindValue(":id",indexTemp);
                 query.bindValue(":name",editName->text().simplified());
                 query.exec();
-                line += "INSERT INTO subdivision (subdivisionid, subdivisionname) VALUES('";
+                line += "INSERT INTO disease (diseaseid, diseasename) VALUES('";
                 line += indexTemp;
                 line += "', '";
                 line += editName->text().toUtf8();
@@ -117,9 +117,9 @@ void SubdivisionForm::editRecord()
     close();
 }
 
-void SubdivisionForm::deleteRecord()
+void DiseaseForm::deleteRecord()
 {
-    ForDelete forDelete(indexTemp,"subdivision",this);
+    ForDelete forDelete(indexTemp,"disease",this);
     forDelete.result();
     forDelete.deleteOnDefault();
     QTextStream stream(&exchangeFile);
@@ -128,32 +128,32 @@ void SubdivisionForm::deleteRecord()
         stream.readLine();
     }
     QSqlQuery query;
-    query.prepare("DELETE FROM subdivision WHERE subdivisionid = :id");
+    query.prepare("DELETE FROM disease WHERE diseaseid = :id");
     query.bindValue(":id",indexTemp);
     query.exec();
     query.next();
-    line += "DELETE FROM subdivision WHERE subdivisionid = '";
+    line += "DELETE FROM disease WHERE diseaseid = '";
     line += indexTemp;
     line += "'";
     line += "\r\n";
     stream<<line;
 }
 
-void SubdivisionForm::done(int result)
+void DiseaseForm::done(int result)
 {
     exchangeFile.close();
     writeSettings();
     QDialog::done(result);
 }
 
-void SubdivisionForm::readSettings()
+void DiseaseForm::readSettings()
 {
     QSettings settings("AO_Batrakov_Inc.", "MSO");
-    restoreGeometry(settings.value("Subdivision").toByteArray());
+    restoreGeometry(settings.value("Disease").toByteArray());
 }
 
-void SubdivisionForm::writeSettings()
+void DiseaseForm::writeSettings()
 {
     QSettings settings("AO_Batrakov_Inc.", "MSO");
-    settings.setValue("Subdivision", saveGeometry());
+    settings.setValue("Disease", saveGeometry());
 }

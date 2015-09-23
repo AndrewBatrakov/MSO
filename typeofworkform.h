@@ -1,15 +1,15 @@
-#ifndef SUBDIVISIONFORM_H
-#define SUBDIVISIONFORM_H
+#ifndef TYPEOFWORKFORM_H
+#define TYPEOFWORKFORM_H
 
 #include <QtWidgets>
 #include "lineedit.h"
 
-class SubdivisionForm : public QDialog
+class TypeOfWorkForm : public QDialog
 {
     Q_OBJECT
 
 public:
-    SubdivisionForm(QString, QWidget *, bool);
+    TypeOfWorkForm(QString, QWidget *, bool);
     void done(int result);
     QString rowOut() const {return indexTemp;};
 
@@ -33,4 +33,4 @@ private:
     QFile exchangeFile;
 };
 
-#endif // SUBDIVISIONFORM_H
+#endif // TYPEOFWORKFORM_H

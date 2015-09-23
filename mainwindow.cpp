@@ -10,6 +10,9 @@
 #include "subdivisionform.h"
 #include "putbase.h"
 #include "getbase.h"
+#include "typeofworkform.h"
+#include "locationform.h"
+#include "diseaseform.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -314,7 +317,6 @@ void MainWindow::writeSettings()
 void MainWindow::createActions()
 {
     //File Action
-
     prefixAction = new QAction(tr("Prefix..."),this);
     connect(prefixAction,SIGNAL(triggered()),this,SLOT(prefixForm()));
     exitAction = new QAction(tr("Exit..."),this);
@@ -518,6 +520,30 @@ void MainWindow::viewTemplateTable(QString tempTable)
             templateModel->setFilter(QString("postname LIKE '%%1%'").arg(filterTable));
         }
         strivgValue = tr("Post");
+    }else if(tempTable == "subdivision"){
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("Name"));
+        if(setFilter){
+            templateModel->setFilter(QString("subdivisionname LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Subdivision");
+    }else if(tempTable == "typeofwork"){
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("Name"));
+        if(setFilter){
+            templateModel->setFilter(QString("typeofworkname LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Type Of Work");
+    }else if(tempTable == "location"){
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("Name"));
+        if(setFilter){
+            templateModel->setFilter(QString("locationname LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Location");
+    }else if(tempTable == "disease"){
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("Name"));
+        if(setFilter){
+            templateModel->setFilter(QString("diseasename LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Disease");
     }
     if(!delAll){
         templateModel->select();
@@ -539,7 +565,8 @@ void MainWindow::viewTemplateTable(QString tempTable)
         }
         tableView->setAlternatingRowColors(true);
         tableView->resizeColumnsToContents();
-        tableView->horizontalHeader()->setResizeContentsPrecision(1000);
+        //tableView->sizeHintForColumn(int);
+        //tableView->horizontalHeader()->setResizeContentsPrecision(200);
         head->setStretchLastSection(true);
         tableLabel->clear();
         tableLabel->setText(tr("Name of Table: %1").arg(strivgValue));
@@ -568,6 +595,21 @@ void MainWindow::addRecordOfTable()
     QString valueTemp = templateModel->tableName();
     if(valueTemp == "node"){
         NodeForm form("",this,false);
+        form.exec();
+    }else if(valueTemp == "post"){
+        PostForm form("",this,false);
+        form.exec();
+    }else if(valueTemp == "subdivision"){
+        SubdivisionForm form("",this,false);
+        form.exec();
+    }else if(valueTemp == "typeofwork"){
+        TypeOfWorkForm form("",this,false);
+        form.exec();
+    }else if(valueTemp == "location"){
+        LocationForm form("",this,false);
+        form.exec();
+    }else if(valueTemp == "disease"){
+        DiseaseForm form("",this,false);
         form.exec();
     }
     QModelIndex modIndex = tableView->currentIndex();
@@ -599,6 +641,26 @@ void MainWindow::deleteRecordOfTable()
                 iDValue = record.value("nodeid").toString();
                 NodeForm form(iDValue,this,false);
                 form.deleteRecord();
+            }else if(valueTemp == "post"){
+                iDValue = record.value("postid").toString();
+                PostForm form(iDValue,this,false);
+                form.deleteRecord();
+            }else if(valueTemp == "subdivision"){
+                iDValue = record.value("subdivisionid").toString();
+                SubdivisionForm form(iDValue,this,false);
+                form.deleteRecord();
+            }else if(valueTemp == "typeofwork"){
+                iDValue = record.value("typeofworkid").toString();
+                TypeOfWorkForm form(iDValue,this,false);
+                form.deleteRecord();
+            }else if(valueTemp == "location"){
+                iDValue = record.value("locationid").toString();
+                LocationForm form(iDValue,this,false);
+                form.deleteRecord();
+            }else if(valueTemp == "disease"){
+                iDValue = record.value("diseaseid").toString();
+                DiseaseForm form(iDValue,this,false);
+                form.deleteRecord();
             }
         }
     }
@@ -614,6 +676,26 @@ void MainWindow::editRecordOfTable()
         if(stringVar == "node"){
             QString iD = record.value("nodeid").toString();
             NodeForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "post"){
+            QString iD = record.value("postid").toString();
+            PostForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "subdivision"){
+            QString iD = record.value("subdivisionid").toString();
+            SubdivisionForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "typeofwork"){
+            QString iD = record.value("typeofworkid").toString();
+            TypeOfWorkForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "location"){
+            QString iD = record.value("locationid").toString();
+            LocationForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "disease"){
+            QString iD = record.value("diseaseid").toString();
+            DiseaseForm form(iD, this, false);
             form.exec();
         }
     }

@@ -1,15 +1,15 @@
-#ifndef SUBDIVISIONFORM_H
-#define SUBDIVISIONFORM_H
+#ifndef LOCATIONFORM_H
+#define LOCATIONFORM_H
 
 #include <QtWidgets>
 #include "lineedit.h"
 
-class SubdivisionForm : public QDialog
+class LocationForm : public QDialog
 {
     Q_OBJECT
 
 public:
-    SubdivisionForm(QString, QWidget *, bool);
+    LocationForm(QString, QWidget *, bool);
     void done(int result);
     QString rowOut() const {return indexTemp;};
 
@@ -33,4 +33,4 @@ private:
     QFile exchangeFile;
 };
 
-#endif // SUBDIVISIONFORM_H
+#endif // LOCATIONFORM_H

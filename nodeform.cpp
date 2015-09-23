@@ -97,7 +97,7 @@ void NodeForm::editRecord()
         line += editCode->text().toUtf8();
         line += "', head = '";
         line += QString::number(head->checkState());
-        line += "' WHERE colorid = '";
+        line += "' WHERE nodeid = '";
         line += indexTemp;
         line += "'";
         line += "\r\n";

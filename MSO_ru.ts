@@ -54,214 +54,231 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="263"/>
+        <location filename="mainwindow.cpp" line="270"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="268"/>
+        <location filename="mainwindow.cpp" line="275"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="273"/>
+        <location filename="mainwindow.cpp" line="280"/>
         <source>Edit</source>
         <translation>Редактировать</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="311"/>
+        <location filename="mainwindow.cpp" line="317"/>
         <source>Prefix...</source>
         <translation>Префикс...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="313"/>
+        <location filename="mainwindow.cpp" line="319"/>
         <source>Exit...</source>
         <translation>Выход...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="317"/>
+        <location filename="mainwindow.cpp" line="323"/>
         <source>Nodes...</source>
         <translation>Узлы...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="319"/>
+        <location filename="mainwindow.cpp" line="325"/>
         <source>Employee...</source>
         <translation>Сотрудник...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="320"/>
+        <location filename="mainwindow.cpp" line="327"/>
         <source>Subdivision...</source>
         <translation>Подразделение...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="321"/>
+        <location filename="mainwindow.cpp" line="329"/>
         <source>Post...</source>
         <translation>Должность...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="322"/>
+        <location filename="mainwindow.cpp" line="331"/>
         <source>Medical Service...</source>
         <translation>Медицинская услуга...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="323"/>
+        <location filename="mainwindow.cpp" line="333"/>
         <source>Treatment...</source>
         <translation>Вид обращения...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="324"/>
         <source>Discrease...</source>
+        <translation type="vanished">Вид заболевания...</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="21"/>
+        <source>MSO v.</source>
+        <translation>Медико-Санитарный Отдел v.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="335"/>
+        <source>Disease...</source>
         <translation>Вид заболевания...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="325"/>
+        <location filename="mainwindow.cpp" line="337"/>
         <source>Location...</source>
         <translation>Месторождение...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="326"/>
+        <location filename="mainwindow.cpp" line="339"/>
         <source>Type Of Work...</source>
         <translation>Вид работы...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="336"/>
+        <location filename="mainwindow.cpp" line="350"/>
         <source>Put Base on FTP</source>
         <translation>Выложить базу на FTP</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="339"/>
+        <location filename="mainwindow.cpp" line="353"/>
         <source>Get Base from FTP</source>
         <translation>Получить базу с FTP</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="342"/>
+        <location filename="mainwindow.cpp" line="356"/>
         <source>Search In Journal By Contens...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="345"/>
+        <location filename="mainwindow.cpp" line="359"/>
         <source>Exchange Data Base...</source>
         <translation>Обмен данными...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="349"/>
+        <location filename="mainwindow.cpp" line="363"/>
         <source>About Qt...</source>
         <translation>О Qt...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="351"/>
+        <location filename="mainwindow.cpp" line="365"/>
         <source>About programm...</source>
         <translation>О программе...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="357"/>
+        <location filename="mainwindow.cpp" line="371"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="362"/>
+        <location filename="mainwindow.cpp" line="376"/>
         <source>References</source>
         <translation>Справочники</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="382"/>
+        <location filename="mainwindow.cpp" line="396"/>
         <source>Service</source>
         <translation>Сервис</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="392"/>
+        <location filename="mainwindow.cpp" line="406"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="405"/>
+        <location filename="mainwindow.cpp" line="419"/>
         <source>MSO</source>
         <translation>МСО</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="408"/>
+        <location filename="mainwindow.cpp" line="422"/>
         <source>&lt;p style=&quot;color:darkblue&quot;; style=&quot;font-family:Times New Roman&quot;; style=&quot;font-size :20pt&quot;; style=&quot;font: bold&quot; &gt;MSO &lt;br/&gt; (SQLite version) </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p style=&quot;color:darkblue&quot;; style=&quot;font-family:Times New Roman&quot;; style=&quot;font-size :20pt&quot;; style=&quot;font: bold&quot; &gt;МСО &lt;br/&gt; (SQLite version) </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="414"/>
+        <location filename="mainwindow.cpp" line="428"/>
         <source>&lt;/p&gt;&lt;p style=&quot;color:darkgreen&quot;; style=&quot;font-family:Times New Roman&quot;; style=&quot;font-size :12pt&quot;&gt;Copyright 2011-15 A+O Batrakov Inc.&lt;/p&gt;&lt;p style=&quot;font-size :12pt&quot;&gt;The program helps to keep MSO information.&lt;/p&gt;&lt;p style=&quot;font-family:Times New Roman&quot;; style=&quot;font-size :10pt&quot;&gt;An how to improve, extend the functionality of the program, press button &quot;Send mail&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;/p&gt;&lt;p style=&quot;color:darkgreen&quot;; style=&quot;font-family:Times New Roman&quot;; style=&quot;font-size :12pt&quot;&gt;Copyright 2011-15 A+O Batrakov Inc.&lt;/p&gt;&lt;p style=&quot;font-size :12pt&quot;&gt;Программа хранения информации МСО.&lt;/p&gt;&lt;p style=&quot;font-family:Times New Roman&quot;; style=&quot;font-size :10pt&quot;&gt;По вопросам улучшения или изменения функциональности программы отправте письмо разработчику.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="424"/>
+        <location filename="mainwindow.cpp" line="438"/>
         <source>Send mail
 to developer</source>
-        <translation type="unfinished"></translation>
+        <translation>Отправить</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="447"/>
+        <location filename="mainwindow.cpp" line="461"/>
         <source>Add Record</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="453"/>
+        <location filename="mainwindow.cpp" line="467"/>
         <source>Delete Record</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="458"/>
+        <location filename="mainwindow.cpp" line="472"/>
         <source>Edit Record</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="463"/>
+        <location filename="mainwindow.cpp" line="477"/>
         <source>Copy Record</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="492"/>
+        <location filename="mainwindow.cpp" line="507"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Код</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="493"/>
+        <location filename="mainwindow.cpp" line="508"/>
+        <location filename="mainwindow.cpp" line="515"/>
+        <location filename="mainwindow.cpp" line="521"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Наименование</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="494"/>
+        <location filename="mainwindow.cpp" line="509"/>
         <source>Head</source>
-        <translation type="unfinished"></translation>
+        <translation>Центральный узел</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="498"/>
+        <location filename="mainwindow.cpp" line="513"/>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Узел</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="523"/>
+        <location filename="mainwindow.cpp" line="519"/>
+        <source>Post</source>
+        <translation>Должность</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="525"/>
+        <source>Subdivision</source>
+        <translation>Подразделение</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="551"/>
         <source>Name of Table: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Наименование таблицы: %1</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="560"/>
+        <location filename="mainwindow.cpp" line="594"/>
         <source>Attention!!!</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание!!!</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="561"/>
+        <location filename="mainwindow.cpp" line="595"/>
         <source>Really delete?</source>
-        <translation type="unfinished"></translation>
+        <translation>Действительно удалить?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="605"/>
-        <location filename="mainwindow.cpp" line="610"/>
-        <location filename="mainwindow.cpp" line="615"/>
-        <location filename="mainwindow.cpp" line="620"/>
+        <location filename="mainwindow.cpp" line="655"/>
+        <location filename="mainwindow.cpp" line="674"/>
         <source>Atention!</source>
         <translation>Внимание!</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="605"/>
-        <location filename="mainwindow.cpp" line="610"/>
-        <location filename="mainwindow.cpp" line="615"/>
-        <location filename="mainwindow.cpp" line="620"/>
+        <location filename="mainwindow.cpp" line="655"/>
+        <location filename="mainwindow.cpp" line="674"/>
         <source>This menu item does not work.</source>
         <translation>Этот пункт меню не работает.</translation>
     </message>
@@ -289,42 +306,42 @@ to developer</source>
     <message>
         <location filename="nodeform.cpp" line="12"/>
         <source>Code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Код:</translation>
     </message>
     <message>
         <location filename="nodeform.cpp" line="19"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Наименование:</translation>
     </message>
     <message>
         <location filename="nodeform.cpp" line="27"/>
         <source>Head Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Центральный узел</translation>
     </message>
     <message>
         <location filename="nodeform.cpp" line="29"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Записать</translation>
     </message>
     <message>
         <location filename="nodeform.cpp" line="31"/>
         <source>Save And Close Button</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопка Записать и Закрыть</translation>
     </message>
     <message>
         <location filename="nodeform.cpp" line="33"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="nodeform.cpp" line="37"/>
         <source>Cancel Button</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопка Отмена</translation>
     </message>
     <message>
         <location filename="nodeform.cpp" line="70"/>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Узел</translation>
     </message>
 </context>
 <context>
@@ -332,12 +349,45 @@ to developer</source>
     <message>
         <location filename="numprefix.cpp" line="16"/>
         <source>Attention!</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание!</translation>
     </message>
     <message>
         <location filename="numprefix.cpp" line="16"/>
         <source>Insert Prefix Number!!!</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавьте префикс нумерации!!!</translation>
+    </message>
+</context>
+<context>
+    <name>PostForm</name>
+    <message>
+        <location filename="postform.cpp" line="12"/>
+        <source>Name:</source>
+        <translation>Наименование:</translation>
+    </message>
+    <message>
+        <location filename="postform.cpp" line="19"/>
+        <source>Save</source>
+        <translation>Записать</translation>
+    </message>
+    <message>
+        <location filename="postform.cpp" line="21"/>
+        <source>Save And Close Button</source>
+        <translation>Кнопка Записать и Закрыть</translation>
+    </message>
+    <message>
+        <location filename="postform.cpp" line="23"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="postform.cpp" line="27"/>
+        <source>Cancel Button</source>
+        <translation>Кнопка Отмена</translation>
+    </message>
+    <message>
+        <location filename="postform.cpp" line="55"/>
+        <source>Post</source>
+        <translation>Должность</translation>
     </message>
 </context>
 <context>
@@ -345,27 +395,45 @@ to developer</source>
     <message>
         <location filename="prefixnumber.cpp" line="6"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Наименование:</translation>
     </message>
     <message>
         <location filename="prefixnumber.cpp" line="13"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Записать</translation>
     </message>
     <message>
         <location filename="prefixnumber.cpp" line="16"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="prefixnumber.cpp" line="27"/>
         <source>Three letters of the Latin alphabet</source>
-        <translation type="unfinished"></translation>
+        <translation>Три буквы латинского алфавита</translation>
     </message>
     <message>
         <location filename="prefixnumber.cpp" line="38"/>
         <source>Prefix Number </source>
-        <translation type="unfinished"></translation>
+        <translation>Префикс нумерации</translation>
+    </message>
+</context>
+<context>
+    <name>PutBase</name>
+    <message>
+        <location filename="putbase.cpp" line="11"/>
+        <source>Attention!</source>
+        <translation>Внимание!</translation>
+    </message>
+    <message>
+        <location filename="putbase.cpp" line="12"/>
+        <source>Don&apos;t Open DataBase File!</source>
+        <translation>Не открыт файл базы данных!</translation>
+    </message>
+    <message>
+        <location filename="putbase.cpp" line="21"/>
+        <source>Put DataBase to Server...</source>
+        <translation>Выложить файл базы данных на сервер...</translation>
     </message>
 </context>
 <context>
@@ -373,17 +441,17 @@ to developer</source>
     <message>
         <location filename="putfile.cpp" line="11"/>
         <source>Attention!</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание!</translation>
     </message>
     <message>
         <location filename="putfile.cpp" line="12"/>
         <source>Don&apos;t Open File!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не открыт файл!</translation>
     </message>
     <message>
         <location filename="putfile.cpp" line="22"/>
         <source>Put File to Server...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выложить файл базы данных на сервер...</translation>
     </message>
 </context>
 <context>
@@ -391,17 +459,21 @@ to developer</source>
     <message>
         <location filename="dbdirection.cpp" line="14"/>
         <source>QSQLite Database Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка базы данных</translation>
     </message>
     <message>
         <location filename="nodeform.cpp" line="139"/>
+        <location filename="postform.cpp" line="112"/>
+        <location filename="subdivisionform.cpp" line="112"/>
         <source> is availble!</source>
-        <translation type="unfinished"></translation>
+        <translation> уже существует!</translation>
     </message>
     <message>
         <location filename="nodeform.cpp" line="140"/>
+        <location filename="postform.cpp" line="113"/>
+        <location filename="subdivisionform.cpp" line="113"/>
         <source>Atention!!!</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание!!!</translation>
     </message>
 </context>
 <context>
@@ -409,13 +481,14 @@ to developer</source>
     <message>
         <location filename="registrationform.cpp" line="250"/>
         <source>Attention!</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание!</translation>
     </message>
     <message>
         <location filename="registrationform.cpp" line="251"/>
         <source>No DataBase File!
 Upload from Server?</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет файла базы данных!
+Загрузить с сервера?</translation>
     </message>
 </context>
 <context>
@@ -423,24 +496,90 @@ Upload from Server?</source>
     <message>
         <location filename="smtpssl.cpp" line="203"/>
         <source>Message sent</source>
-        <translation type="unfinished"></translation>
+        <translation>Сообщение отправлено</translation>
     </message>
     <message>
         <location filename="smtpssl.cpp" line="213"/>
         <source>Qt Simple SMTP client</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="smtpssl.cpp" line="213"/>
         <source>Unexpected reply from SMTP server:
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="smtpssl.cpp" line="215"/>
         <source>Failed to send message</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка передачи сообщения</translation>
+    </message>
+</context>
+<context>
+    <name>SmtpForm</name>
+    <message>
+        <location filename="smtpform.cpp" line="7"/>
+        <source>About:</source>
+        <translation>О:</translation>
+    </message>
+    <message>
+        <location filename="smtpform.cpp" line="15"/>
+        <source>Send</source>
+        <translation>Отправить</translation>
+    </message>
+    <message>
+        <location filename="smtpform.cpp" line="17"/>
+        <source>Send mail Button</source>
+        <translation>Кнопка отправки письма</translation>
+    </message>
+    <message>
+        <location filename="smtpform.cpp" line="19"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="smtpform.cpp" line="23"/>
+        <source>Cancel Button</source>
+        <translation>Кнопка Отмена</translation>
+    </message>
+    <message>
+        <location filename="smtpform.cpp" line="37"/>
+        <source>Message to Developer</source>
+        <translation>Сообщение разработчику</translation>
+    </message>
+</context>
+<context>
+    <name>SubdivisionForm</name>
+    <message>
+        <location filename="subdivisionform.cpp" line="12"/>
+        <source>Name:</source>
+        <translation>Наименование:</translation>
+    </message>
+    <message>
+        <location filename="subdivisionform.cpp" line="19"/>
+        <source>Save</source>
+        <translation>Записать</translation>
+    </message>
+    <message>
+        <location filename="subdivisionform.cpp" line="21"/>
+        <source>Save And Close Button</source>
+        <translation>Кнопка Записать и Закрыть</translation>
+    </message>
+    <message>
+        <location filename="subdivisionform.cpp" line="23"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="subdivisionform.cpp" line="27"/>
+        <source>Cancel Button</source>
+        <translation>Кнопка Отмена</translation>
+    </message>
+    <message>
+        <location filename="subdivisionform.cpp" line="55"/>
+        <source>Subdivision</source>
+        <translation>Подразделение</translation>
     </message>
 </context>
 <context>
@@ -448,32 +587,32 @@ Upload from Server?</source>
     <message>
         <location filename="update.cpp" line="239"/>
         <source>Attention!</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание!</translation>
     </message>
     <message>
         <location filename="update.cpp" line="240"/>
         <source>Don&apos;t open %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не открыт файл %1</translation>
     </message>
     <message>
         <location filename="update.cpp" line="262"/>
         <source>New Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновления</translation>
     </message>
     <message>
         <location filename="update.cpp" line="263"/>
         <source>New Updates Available! Download?</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновления программы готовы! Загрузить?</translation>
     </message>
     <message>
         <location filename="update.cpp" line="312"/>
         <source>Downloading MSO ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка МСО...</translation>
     </message>
     <message>
         <location filename="update.cpp" line="332"/>
         <source>Downloading MSO translation ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка МСО файла перевода...</translation>
     </message>
 </context>
 </TS>

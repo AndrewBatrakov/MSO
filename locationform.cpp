@@ -1,9 +1,9 @@
-#include "subdivisionform.h"
+#include "locationform.h"
 #include <QtSql>
 #include "numprefix.h"
 #include "fordelete.h"
 
-SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) :
+LocationForm::LocationForm(QString id, QWidget *parent, bool onlyForRead) :
     QDialog(parent)
 {
     readSettings();
@@ -32,7 +32,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
 
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("SELECT subdivisionname FROM subdivision WHERE subdivisionid = :id");
+        query.prepare("SELECT locationname FROM location WHERE locationid = :id");
         query.bindValue(":id",indexTemp);
         query.exec();
         while(query.next()){
@@ -52,7 +52,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
 
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Subdivision"));
+    setWindowTitle(tr("Location"));
 
     exchangeFile.setFileName("exchange.txt");
     if(!exchangeFile.isOpen()){
@@ -60,7 +60,7 @@ SubdivisionForm::SubdivisionForm(QString id, QWidget *parent, bool onlyForRead) 
     }
 }
 
-void SubdivisionForm::editRecord()
+void LocationForm::editRecord()
 {
     QTextStream stream(&exchangeFile);
     QString line;
@@ -69,37 +69,37 @@ void SubdivisionForm::editRecord()
     }
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("UPDATE subdivision SET subdivisionname = :name"
-                      " WHERE subdivisionid = :id");
+        query.prepare("UPDATE location SET locationname = :name"
+                      " WHERE locationid = :id");
         query.bindValue(":name",editName->text());
         query.bindValue(":id",indexTemp);
         query.exec();
-        line += "UPDATE subdivision SET subdivisionname = '";
+        line += "UPDATE location SET locationname = '";
         line += editName->text().toUtf8();
-        line += "' WHERE subdivisionid = '";
+        line += "' WHERE locationid = '";
         line += indexTemp;
         line += "'";
         line += "\r\n";
         stream<<line;
     }else{
         QSqlQuery query;
-        query.prepare("SELECT * FROM subdivision WHERE subdivisionname = :name");
+        query.prepare("SELECT * FROM location WHERE locationname = :name");
         query.bindValue(":name",editName->text().simplified());
         query.exec();
         query.next();
         if(!query.isValid()){
             NumPrefix numPrefix(this);
-            indexTemp = numPrefix.getPrefix("subdivision");
+            indexTemp = numPrefix.getPrefix("location");
             if(indexTemp == ""){
                 close();
             }else{
                 QSqlQuery query;
-                query.prepare("INSERT INTO subdivision (subdivisionid, subdivisionname) "
+                query.prepare("INSERT INTO location (locationid, locationname) "
                               "VALUES(:id, :name)");
                 query.bindValue(":id",indexTemp);
                 query.bindValue(":name",editName->text().simplified());
                 query.exec();
-                line += "INSERT INTO subdivision (subdivisionid, subdivisionname) VALUES('";
+                line += "INSERT INTO location (locationid, locationname) VALUES('";
                 line += indexTemp;
                 line += "', '";
                 line += editName->text().toUtf8();
@@ -117,9 +117,9 @@ void SubdivisionForm::editRecord()
     close();
 }
 
-void SubdivisionForm::deleteRecord()
+void LocationForm::deleteRecord()
 {
-    ForDelete forDelete(indexTemp,"subdivision",this);
+    ForDelete forDelete(indexTemp,"location",this);
     forDelete.result();
     forDelete.deleteOnDefault();
     QTextStream stream(&exchangeFile);
@@ -128,32 +128,32 @@ void SubdivisionForm::deleteRecord()
         stream.readLine();
     }
     QSqlQuery query;
-    query.prepare("DELETE FROM subdivision WHERE subdivisionid = :id");
+    query.prepare("DELETE FROM location WHERE locationid = :id");
     query.bindValue(":id",indexTemp);
     query.exec();
     query.next();
-    line += "DELETE FROM subdivision WHERE subdivisionid = '";
+    line += "DELETE FROM location WHERE locationid = '";
     line += indexTemp;
     line += "'";
     line += "\r\n";
     stream<<line;
 }
 
-void SubdivisionForm::done(int result)
+void LocationForm::done(int result)
 {
     exchangeFile.close();
     writeSettings();
     QDialog::done(result);
 }
 
-void SubdivisionForm::readSettings()
+void LocationForm::readSettings()
 {
     QSettings settings("AO_Batrakov_Inc.", "MSO");
-    restoreGeometry(settings.value("Subdivision").toByteArray());
+    restoreGeometry(settings.value("Location").toByteArray());
 }
 
-void SubdivisionForm::writeSettings()
+void LocationForm::writeSettings()
 {
     QSettings settings("AO_Batrakov_Inc.", "MSO");
-    settings.setValue("Subdivision", saveGeometry());
+    settings.setValue("Location", saveGeometry());
 }
