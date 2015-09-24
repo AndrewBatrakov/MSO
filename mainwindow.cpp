@@ -13,6 +13,8 @@
 #include "typeofworkform.h"
 #include "locationform.h"
 #include "diseaseform.h"
+#include "treatmentform.h"
+#include "medicalserviceform.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -150,56 +152,7 @@ MainWindow::MainWindow(QWidget *parent)
                            "color: #00cc00;"
                            "font: bold;}"
 
-                           "QDoubleSpinBox {padding-left: 15px; padding-right: 15px; border: 1px;}"
 
-                           "QDoubleSpinBox::up-button {subcontrol-position: right; subcontrol-origin: border; "
-                           "min-width: 15px; min-height: 15px;"
-                           "background-color: "
-                           "qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-                           "stop:0 #d3d3d3,"
-                           "stop:0.5 #bebebe,"
-                           "stop:0.51 #bebebe,"
-                           "stop:1 #848484);"
-                           "color: #231A4C;"
-                           "font: bold;}"
-
-                           "QDoubleSpinBox::up-button:hover {background-color: "
-                           "qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-                           "stop:0 #cfcccc,"
-                           "stop:0.5 #333232,"
-                           "stop:0.51 #000000,"
-                           "stop:1 #585c5f);"
-                           "color: #00cc00;}"
-
-                           "QDoubleSpinBox::up-arrow {width: 10px; height: 10px;}"
-                           "QDoubleSpinBox::down-arrow {width: 10px; height: 10px;}"
-
-                           "QDoubleSpinBox::up-arrow {image: url(:/upblack.png);}"
-
-                           "QDoubleSpinBox::up-arrow:hover {image: url(:/upgreen.png);}"
-
-                           "QDoubleSpinBox::down-arrow {image: url(:/downblack.png);}"
-
-                           "QDoubleSpinBox::down-arrow:hover {image: url(:/downred.png);}"
-
-                           "QDoubleSpinBox::down-button {subcontrol-position: left; subcontrol-origin: border;"
-                           "min-width: 15px; min-height: 15px;"
-                           "background-color: "
-                           "qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-                           "stop:0 #d3d3d3,"
-                           "stop:0.5 #bebebe,"
-                           "stop:0.51 #bebebe,"
-                           "stop:1 #848484);"
-                           "color: #231A4C;"
-                           "font: bold;}"
-
-                           "QDoubleSpinBox::down-button:hover {background-color: "
-                           "qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-                           "stop:0 #cfcccc,"
-                           "stop:0.5 #333232,"
-                           "stop:0.51 #000000,"
-                           "stop:1 #585c5f);"
-                           "color: #00cc00;}"
 
                            "QSpinBox {padding-left: 15px; padding-right: 15px; border: 1px;}"
 
@@ -260,6 +213,57 @@ MainWindow::MainWindow(QWidget *parent)
     createMenu();
     createContextMenu();
     viewNode();
+
+    /*"QDoubleSpinBox {padding-left: 15px; padding-right: 15px; border: 1px;}"
+
+    "QDoubleSpinBox::up-button {subcontrol-position: right; subcontrol-origin: border; "
+    "min-width: 15px; min-height: 15px;"
+    "background-color: "
+    "qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+    "stop:0 #d3d3d3,"
+    "stop:0.5 #bebebe,"
+    "stop:0.51 #bebebe,"
+    "stop:1 #848484);"
+    "color: #231A4C;"
+    "font: bold;}"
+
+    "QDoubleSpinBox::up-button:hover {background-color: "
+    "qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+    "stop:0 #cfcccc,"
+    "stop:0.5 #333232,"
+    "stop:0.51 #000000,"
+    "stop:1 #585c5f);"
+    "color: #00cc00;}"
+
+    "QDoubleSpinBox::up-arrow {width: 10px; height: 10px;}"
+    "QDoubleSpinBox::down-arrow {width: 10px; height: 10px;}"
+
+    "QDoubleSpinBox::up-arrow {image: url(:/upblack.png);}"
+
+    "QDoubleSpinBox::up-arrow:hover {image: url(:/upgreen.png);}"
+
+    "QDoubleSpinBox::down-arrow {image: url(:/downblack.png);}"
+
+    "QDoubleSpinBox::down-arrow:hover {image: url(:/downred.png);}"
+
+    "QDoubleSpinBox::down-button {subcontrol-position: left; subcontrol-origin: border;"
+    "min-width: 15px; min-height: 15px;"
+    "background-color: "
+    "qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+    "stop:0 #d3d3d3,"
+    "stop:0.5 #bebebe,"
+    "stop:0.51 #bebebe,"
+    "stop:1 #848484);"
+    "color: #231A4C;"
+    "font: bold;}"
+
+    "QDoubleSpinBox::down-button:hover {background-color: "
+    "qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+    "stop:0 #cfcccc,"
+    "stop:0.5 #333232,"
+    "stop:0.51 #000000,"
+    "stop:1 #585c5f);"
+    "color: #00cc00;}"*/
 }
 
 void MainWindow::createPanel()
@@ -544,6 +548,19 @@ void MainWindow::viewTemplateTable(QString tempTable)
             templateModel->setFilter(QString("diseasename LIKE '%%1%'").arg(filterTable));
         }
         strivgValue = tr("Disease");
+    }else if(tempTable == "treatment"){
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("Name"));
+        if(setFilter){
+            templateModel->setFilter(QString("treatmentname LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Treatment");
+    }else if(tempTable == "medicalservice"){
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("Name"));
+        templateModel->setHeaderData(2,Qt::Horizontal,tr("Cost"));
+        if(setFilter){
+            templateModel->setFilter(QString("medicalservicename LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Medical Service");
     }
     if(!delAll){
         templateModel->select();
@@ -566,7 +583,7 @@ void MainWindow::viewTemplateTable(QString tempTable)
         tableView->setAlternatingRowColors(true);
         tableView->resizeColumnsToContents();
         //tableView->sizeHintForColumn(int);
-        //tableView->horizontalHeader()->setResizeContentsPrecision(200);
+        tableView->horizontalHeader()->setResizeContentsPrecision(1000);
         head->setStretchLastSection(true);
         tableLabel->clear();
         tableLabel->setText(tr("Name of Table: %1").arg(strivgValue));
@@ -610,6 +627,12 @@ void MainWindow::addRecordOfTable()
         form.exec();
     }else if(valueTemp == "disease"){
         DiseaseForm form("",this,false);
+        form.exec();
+    }else if(valueTemp == "treatment"){
+        TreatmentForm form("",this,false);
+        form.exec();
+    }else if(valueTemp == "medicalservice"){
+        MedicalServiceForm form("",this,false);
         form.exec();
     }
     QModelIndex modIndex = tableView->currentIndex();
@@ -661,6 +684,14 @@ void MainWindow::deleteRecordOfTable()
                 iDValue = record.value("diseaseid").toString();
                 DiseaseForm form(iDValue,this,false);
                 form.deleteRecord();
+            }else if(valueTemp == "treatment"){
+                iDValue = record.value("treatmentid").toString();
+                TreatmentForm form(iDValue,this,false);
+                form.deleteRecord();
+            }else if(valueTemp == "medicalservice"){
+                iDValue = record.value("medicalserviceid").toString();
+                MedicalServiceForm form(iDValue,this,false);
+                form.deleteRecord();
             }
         }
     }
@@ -696,6 +727,14 @@ void MainWindow::editRecordOfTable()
         }else if(stringVar == "disease"){
             QString iD = record.value("diseaseid").toString();
             DiseaseForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "treatment"){
+            QString iD = record.value("treatmentid").toString();
+            TreatmentForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "medicalservice"){
+            QString iD = record.value("medicalserviceid").toString();
+            MedicalServiceForm form(iD, this, false);
             form.exec();
         }
     }

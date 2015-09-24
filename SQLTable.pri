@@ -5,7 +5,9 @@ HEADERS += \
     $$PWD/subdivisionform.h \
     $$PWD/typeofworkform.h \
     $$PWD/locationform.h \
-    $$PWD/diseaseform.h
+    $$PWD/diseaseform.h \
+    $$PWD/treatmentform.h \
+    $$PWD/medicalserviceform.h
 
 SOURCES += \
     $$PWD/nodeform.cpp \
@@ -14,4 +16,6 @@ SOURCES += \
     $$PWD/subdivisionform.cpp \
     $$PWD/typeofworkform.cpp \
     $$PWD/locationform.cpp \
-    $$PWD/diseaseform.cpp
+    $$PWD/diseaseform.cpp \
+    $$PWD/treatmentform.cpp \
+    $$PWD/medicalserviceform.cpp
