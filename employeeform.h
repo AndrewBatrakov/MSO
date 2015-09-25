@@ -21,12 +21,22 @@ private slots:
     void readSettings();
     void writeSettings();
 
+    void addSubRecord();
+    void seeSubRecord();
+    void listSubRecord();
+    void addPostRecord();
+    void seePostRecord();
+    void listPostRecord();
+
 private:
-    QLabel *labelCode;
-    LineEdit *editCode;
-    QLabel *labelName;
-    LineEdit *editName;
-    QCheckBox *head;
+    QLabel *labelFIO;
+    LineEdit *editFIO;
+    QLabel *labelSub;
+    LineEdit *editSub;
+    QLabel *labelPost;
+    LineEdit *editPost;
+    QLabel *labelDate;
+    QDateEdit *editDate;
 
     QPushButton *saveButton;
     QPushButton *cancelButton;

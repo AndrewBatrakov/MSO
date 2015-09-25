@@ -15,6 +15,7 @@
 #include "diseaseform.h"
 #include "treatmentform.h"
 #include "medicalserviceform.h"
+#include "employeeform.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -561,6 +562,15 @@ void MainWindow::viewTemplateTable(QString tempTable)
             templateModel->setFilter(QString("medicalservicename LIKE '%%1%'").arg(filterTable));
         }
         strivgValue = tr("Medical Service");
+    }else if(tempTable == "employee"){
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("FIO"));
+        templateModel->setHeaderData(2,Qt::Horizontal,tr("Subdivision"));
+        templateModel->setHeaderData(3,Qt::Horizontal,tr("Post"));
+        templateModel->setHeaderData(4,Qt::Horizontal,tr("Data Birthday"));
+        if(setFilter){
+            templateModel->setFilter(QString("employeename LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Medical Service");
     }
     if(!delAll){
         templateModel->select();
@@ -634,6 +644,9 @@ void MainWindow::addRecordOfTable()
     }else if(valueTemp == "medicalservice"){
         MedicalServiceForm form("",this,false);
         form.exec();
+    }else if(valueTemp == "employee"){
+        EmployeeForm form("",this,false);
+        form.exec();
     }
     QModelIndex modIndex = tableView->currentIndex();
     MainWindow::updatePanel(modIndex);
@@ -692,6 +705,10 @@ void MainWindow::deleteRecordOfTable()
                 iDValue = record.value("medicalserviceid").toString();
                 MedicalServiceForm form(iDValue,this,false);
                 form.deleteRecord();
+            }else if(valueTemp == "employee"){
+                iDValue = record.value("employeeid").toString();
+                EmployeeForm form(iDValue,this,false);
+                form.deleteRecord();
             }
         }
     }
@@ -735,6 +752,10 @@ void MainWindow::editRecordOfTable()
         }else if(stringVar == "medicalservice"){
             QString iD = record.value("medicalserviceid").toString();
             MedicalServiceForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "employee"){
+            QString iD = record.value("employeeid").toString();
+            EmployeeForm form(iD, this, false);
             form.exec();
         }
     }

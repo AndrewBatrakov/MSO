@@ -17,10 +17,9 @@ MedicalServiceForm::MedicalServiceForm(QString id, QWidget *parent, bool onlyFor
     labelName->setBuddy(editName);
 
     labelCost = new QLabel(tr("Cost:"));
-    editCost = new QDoubleSpinBox;
-    editCost->setMaximum(999999.99);
-    //QRegExp regCost("^([1-9][0-9]*|0)(\\.|,)[0-9]{2}");
-    //editCost->setValidator(new QRegExpValidator(regCost,this));
+    editCost = new LineEdit;
+    QRegExp regCost("^([1-9][0-9]*|0)(\\.|,)[0-9]{2}");
+    editCost->setValidator(new QRegExpValidator(regCost,this));
 
     saveButton = new QPushButton(tr("Save"));
     connect(saveButton,SIGNAL(clicked()),this,SLOT(editRecord()));
@@ -44,7 +43,8 @@ MedicalServiceForm::MedicalServiceForm(QString id, QWidget *parent, bool onlyFor
         while(query.next()){
             qDebug()<<query.value(1);
             editName->setText(query.value(0).toString());
-            editCost->setValue(query.value(1).toDouble());
+            double tt = query.value(1).toDouble();
+            editCost->setText(QString::number(tt,'f',2));
         }
     }else{
         editName->clear();
@@ -82,13 +82,13 @@ void MedicalServiceForm::editRecord()
         query.prepare("UPDATE medicalservice SET medicalservicename = :name, cost = :cost"
                       " WHERE medicalserviceid = :id");
         query.bindValue(":name",editName->text());
-        query.bindValue(":cost",editCost->value());
+        query.bindValue(":cost",editCost->text());
         query.bindValue(":id",indexTemp);
         query.exec();
         line += "UPDATE medicalservice SET medicalservicename = '";
         line += editName->text().toUtf8();
         line += "', '";
-        line += editCost->value();
+        line += editCost->text();
         line += "' WHERE medicalserviceid = '";
         line += indexTemp;
         line += "'";
@@ -111,14 +111,14 @@ void MedicalServiceForm::editRecord()
                               "VALUES(:id, :name, :cost)");
                 query.bindValue(":id",indexTemp);
                 query.bindValue(":name",editName->text().simplified());
-                query.bindValue(":cost",editCost->value());
+                query.bindValue(":cost",editCost->text());
                 query.exec();
                 line += "INSERT INTO medicalservice (medicalserviceid, medicalservicename, cost) VALUES('";
                 line += indexTemp;
                 line += "', '";
                 line += editName->text().toUtf8();
                 line += "', '";
-                line += editCost->value();
+                line += editCost->text();
                 line += "')";
                 line += "\r\n";
                 stream<<line;

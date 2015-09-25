@@ -25,7 +25,7 @@ private:
     QLabel *labelName;
     LineEdit *editName;
     QLabel *labelCost;
-    QDoubleSpinBox *editCost;
+    LineEdit *editCost;
 
     QPushButton *saveButton;
     QPushButton *cancelButton;
