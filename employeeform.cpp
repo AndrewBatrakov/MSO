@@ -130,11 +130,24 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
 
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("SELECT employeename FROM employee WHERE employeeid = :id");
+        query.prepare("SELECT employeename, subdivisionid, postid, birthday FROM employee WHERE employeeid = :id");
         query.bindValue(":id",indexTemp);
         query.exec();
         while(query.next()){
             editFIO->setText(query.value(0).toString());
+            QSqlQuery querySub;
+            querySub.prepare("SELECT subdivisionname FROM subdivision WHERE subdivisionid = :subid");
+            querySub.bindValue(":subid",query.value(1).toString());
+            querySub.exec();
+            querySub.next();
+            editSub->setText(querySub.value(0).toString());
+            QSqlQuery queryPost;
+            queryPost.prepare("SELECT postname FROM post WHERE postid = :postid");
+            queryPost.bindValue(":postid",query.value(2).toString());
+            queryPost.exec();
+            queryPost.next();
+            editPost->setText(queryPost.value(0).toString());
+            editDate->setDate(query.value(3).toDate());
         }
     }else{
         editFIO->clear();
@@ -166,57 +179,76 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
 
 void EmployeeForm::editRecord()
 {
-//    QTextStream stream(&exchangeFile);
-//    QString line;
-//    while(!stream.atEnd()){
-//        stream.readLine();
-//    }
-//    if(indexTemp != ""){
-//        QSqlQuery query;
-//        query.prepare("UPDATE post SET postname = :name"
-//                      " WHERE postid = :id");
-//        query.bindValue(":name",editName->text());
-//        query.bindValue(":id",indexTemp);
-//        query.exec();
-//        line += "UPDATE post SET postname = '";
-//        line += editName->text().toUtf8();
-//        line += "' WHERE postid = '";
-//        line += indexTemp;
-//        line += "'";
-//        line += "\r\n";
-//        stream<<line;
-//    }else{
-//        QSqlQuery query;
-//        query.prepare("SELECT * FROM post WHERE postname = :name");
-//        query.bindValue(":name",editName->text().simplified());
-//        query.exec();
-//        query.next();
-//        if(!query.isValid()){
-//            NumPrefix numPrefix(this);
-//            indexTemp = numPrefix.getPrefix("post");
-//            if(indexTemp == ""){
-//                close();
-//            }else{
-//                QSqlQuery query;
-//                query.prepare("INSERT INTO post (postid, postname) "
-//                              "VALUES(:id, :name)");
-//                query.bindValue(":id",indexTemp);
-//                query.bindValue(":name",editName->text().simplified());
-//                query.exec();
-//                line += "INSERT INTO post (postid, postname) VALUES('";
-//                line += indexTemp;
-//                line += "', '";
-//                line += editName->text().toUtf8();
-//                line += "')";
-//                line += "\r\n";
-//                stream<<line;
-//            }
-//        }else{
-//            QString tempString = editName->text();
-//            tempString += QObject::tr(" is availble!");
-//            QMessageBox::warning(this,QObject::tr("Atention!!!"),tempString);
-//        }
-//    }
+    QTextStream stream(&exchangeFile);
+    QString line;
+    while(!stream.atEnd()){
+        stream.readLine();
+    }
+    if(indexTemp != ""){
+        QSqlQuery query;
+        query.prepare("UPDATE employee SET employeename = :name, subdivisionid = :subid, postid = :postid, birthday = :date"
+                      " WHERE employeeid = :id");
+        query.bindValue(":name",editFIO->text());
+        query.bindValue(":id",indexTemp);
+        QSqlQuery querySub;
+        querySub.prepare("SELECT subdivisionid FROM subdivision WHERE subdivisionname = :subname");
+        querySub.bindValue(":subname",editSub->text());
+        querySub.exec();
+        querySub.next();
+        query.bindValue(":subid",querySub.value(0).toString());
+        QSqlQuery queryPost;
+        queryPost.prepare("SELECT postid FROM post WHERE postname = :postname");
+        queryPost.bindValue(":postname",editPost->text());
+        queryPost.exec();
+        queryPost.next();
+        query.bindValue(":postid",queryPost.value(0).toString());
+        query.bindValue(":date",editDate->date());
+        query.exec();
+        line += "UPDATE employee SET employeename = '";
+        line += editFIO->text().toUtf8();
+        line += "', subdivisionid = '";
+        line += querySub.value(0).toString();
+        line += "', postid = '";
+        line += queryPost.value(0).toString();
+        line += "', birthday = '";
+        line += editDate->date().toString();
+        line += "' WHERE employeeid = '";
+        line += indexTemp;
+        line += "'";
+        line += "\r\n";
+        stream<<line;
+    }else{
+        QSqlQuery query;
+        query.prepare("SELECT * FROM employee WHERE employeename = :name");
+        query.bindValue(":name",editFIO->text().simplified());
+        query.exec();
+        query.next();
+        if(!query.isValid()){
+            NumPrefix numPrefix(this);
+            indexTemp = numPrefix.getPrefix("employee");
+            if(indexTemp == ""){
+                close();
+            }else{
+                QSqlQuery query;
+                query.prepare("INSERT INTO employee (employeeid, employeename, subdivisionid, postid, birthday) "
+                              "VALUES(:id, :name)");
+                query.bindValue(":id",indexTemp);
+                query.bindValue(":name",editFIO->text().simplified());
+                query.exec();
+                line += "INSERT INTO post (postid, postname) VALUES('";
+                line += indexTemp;
+                line += "', '";
+                line += editFIO->text().toUtf8();
+                line += "')";
+                line += "\r\n";
+                stream<<line;
+            }
+        }else{
+            QString tempString = editFIO->text();
+            tempString += QObject::tr(" is availble!");
+            QMessageBox::warning(this,QObject::tr("Attention!!!"),tempString);
+        }
+    }
     emit accept();
     close();
 }

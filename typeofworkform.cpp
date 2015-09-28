@@ -111,7 +111,7 @@ void TypeOfWorkForm::editRecord()
         }else{
             QString tempString = editName->text();
             tempString += QObject::tr(" is availble!");
-            QMessageBox::warning(this,QObject::tr("Atention!!!"),tempString);
+            QMessageBox::warning(this,QObject::tr("Attention!!!"),tempString);
         }
     }
     emit accept();

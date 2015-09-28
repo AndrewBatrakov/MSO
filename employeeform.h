@@ -43,6 +43,8 @@ private:
     QDialogButtonBox *buttonBox;
 
     QString indexTemp;
+    QString subId;
+    QString postId;
     QFile exchangeFile;
 };
 
