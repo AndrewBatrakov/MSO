@@ -15,7 +15,8 @@ HEADERS += \
     $$PWD/mymodel.h \
     $$PWD/mystyle.h \
     $$PWD/putbase.h \
-    $$PWD/smtpform.h
+    $$PWD/smtpform.h \
+    $$PWD/viewlisttable.h
 
 SOURCES += \
     $$PWD/update.cpp \
@@ -34,4 +35,5 @@ SOURCES += \
     $$PWD/mymodel.cpp \
     $$PWD/mystyle.cpp \
     $$PWD/putbase.cpp \
-    $$PWD/smtpform.cpp
+    $$PWD/smtpform.cpp \
+    $$PWD/viewlisttable.cpp

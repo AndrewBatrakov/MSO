@@ -2,6 +2,8 @@
 #include <QtSql>
 #include "numprefix.h"
 #include "fordelete.h"
+#include "subdivisionform.h"
+#include "postform.h"
 
 EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
     QDialog(parent)
@@ -130,27 +132,23 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
 
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("SELECT employeename, subdivisionid, postid, birthday FROM employee WHERE employeeid = :id");
+        query.prepare("SELECT emp.employeename, "
+                      "(SELECT sub.subdivisionname FROM subdivision AS sub WHERE sub.subdivisionid = emp.subdivisionid), "
+                      "(SELECT pos.postname FROM post AS pos WHERE pos.postid = emp.postid), "
+                      "birthday FROM employee AS emp WHERE emp.employeeid = :id");
         query.bindValue(":id",indexTemp);
         query.exec();
         while(query.next()){
             editFIO->setText(query.value(0).toString());
-            QSqlQuery querySub;
-            querySub.prepare("SELECT subdivisionname FROM subdivision WHERE subdivisionid = :subid");
-            querySub.bindValue(":subid",query.value(1).toString());
-            querySub.exec();
-            querySub.next();
-            editSub->setText(querySub.value(0).toString());
-            QSqlQuery queryPost;
-            queryPost.prepare("SELECT postname FROM post WHERE postid = :postid");
-            queryPost.bindValue(":postid",query.value(2).toString());
-            queryPost.exec();
-            queryPost.next();
-            editPost->setText(queryPost.value(0).toString());
+            editSub->setText(query.value(1).toString());
+            editPost->setText(query.value(2).toString());
             editDate->setDate(query.value(3).toDate());
         }
     }else{
         editFIO->clear();
+        editSub->clear();
+        editPost->clear();
+        editDate->clear();
     }
 
     QGridLayout *mainLayout = new QGridLayout;
@@ -186,31 +184,24 @@ void EmployeeForm::editRecord()
     }
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("UPDATE employee SET employeename = :name, subdivisionid = :subid, postid = :postid, birthday = :date"
+        query.prepare("UPDATE employee SET employeename = :name, "
+                      "subdivisionid = (SELECT subdivisionid FROM subdivision WHERE subdivisionname = :subname), "
+                      "postid = (SELECT postid FROM post WHERE postname = :postname), "
+                      "birthday = :date"
                       " WHERE employeeid = :id");
         query.bindValue(":name",editFIO->text());
         query.bindValue(":id",indexTemp);
-        QSqlQuery querySub;
-        querySub.prepare("SELECT subdivisionid FROM subdivision WHERE subdivisionname = :subname");
-        querySub.bindValue(":subname",editSub->text());
-        querySub.exec();
-        querySub.next();
-        query.bindValue(":subid",querySub.value(0).toString());
-        QSqlQuery queryPost;
-        queryPost.prepare("SELECT postid FROM post WHERE postname = :postname");
-        queryPost.bindValue(":postname",editPost->text());
-        queryPost.exec();
-        queryPost.next();
-        query.bindValue(":postid",queryPost.value(0).toString());
+        query.bindValue(":subname",editSub->text());
+        query.bindValue(":postname",editPost->text());
         query.bindValue(":date",editDate->date());
         query.exec();
         line += "UPDATE employee SET employeename = '";
         line += editFIO->text().toUtf8();
-        line += "', subdivisionid = '";
-        line += querySub.value(0).toString();
-        line += "', postid = '";
-        line += queryPost.value(0).toString();
-        line += "', birthday = '";
+        line += "', subdivisionid = (SELECT subdivisionid FROM subdivision WHERE subdivisionname = '";
+        line += editSub->text().toUtf8();
+        line += "'), postid = (SELECT postid FROM post WHERE postname = '";
+        line += editPost->text().toUtf8();
+        line += "'), birthday = '";
         line += editDate->date().toString();
         line += "' WHERE employeeid = '";
         line += indexTemp;
@@ -219,8 +210,9 @@ void EmployeeForm::editRecord()
         stream<<line;
     }else{
         QSqlQuery query;
-        query.prepare("SELECT * FROM employee WHERE employeename = :name");
+        query.prepare("SELECT * FROM employee WHERE employeename = :name AND birthday = :date");
         query.bindValue(":name",editFIO->text().simplified());
+        query.bindValue(":date",editDate->date());
         query.exec();
         query.next();
         if(!query.isValid()){
@@ -231,14 +223,26 @@ void EmployeeForm::editRecord()
             }else{
                 QSqlQuery query;
                 query.prepare("INSERT INTO employee (employeeid, employeename, subdivisionid, postid, birthday) "
-                              "VALUES(:id, :name)");
+                              "VALUES(:id, :name, "
+                              "(SELECT subdivisionid FROM subdivision WHERE subdivisionname = :subname), "
+                              "(SELECT postid FROM post WHERE postname = :postname), "
+                              ":date)");
                 query.bindValue(":id",indexTemp);
                 query.bindValue(":name",editFIO->text().simplified());
+                query.bindValue(":subname",editSub->text());
+                query.bindValue(":postname",editPost->text());
+                query.bindValue(":date",editDate->date());
                 query.exec();
-                line += "INSERT INTO post (postid, postname) VALUES('";
+                line += "INSERT INTO employee  (employeeid, employeename, subdivisionid, postid, birthday) VALUES('";
                 line += indexTemp;
                 line += "', '";
                 line += editFIO->text().toUtf8();
+                line += "', (SELECT subdivisionid FROM subdivision WHERE subdivisionname = '";
+                line += editSub->text().toUtf8();
+                line += "'), (SELECT postid FROM post WHERE postname = '";
+                line += editPost->text().toUtf8();
+                line += "'), ";
+                line += editDate->date().toString();
                 line += "')";
                 line += "\r\n";
                 stream<<line;
@@ -255,24 +259,24 @@ void EmployeeForm::editRecord()
 
 void EmployeeForm::deleteRecord()
 {
-//    ForDelete forDelete(indexTemp,"post",this);
-//    forDelete.result();
-//    forDelete.deleteOnDefault();
-//    QTextStream stream(&exchangeFile);
-//    QString line;
-//    while(!stream.atEnd()){
-//        stream.readLine();
-//    }
-//    QSqlQuery query;
-//    query.prepare("DELETE FROM post WHERE postid = :id");
-//    query.bindValue(":id",indexTemp);
-//    query.exec();
-//    query.next();
-//    line += "DELETE FROM post WHERE postid = '";
-//    line += indexTemp;
-//    line += "'";
-//    line += "\r\n";
-//    stream<<line;
+    ForDelete forDelete(indexTemp,"employee",this);
+    forDelete.result();
+    forDelete.deleteOnDefault();
+    QTextStream stream(&exchangeFile);
+    QString line;
+    while(!stream.atEnd()){
+        stream.readLine();
+    }
+    QSqlQuery query;
+    query.prepare("DELETE FROM employee WHERE employeeid = :id");
+    query.bindValue(":id",indexTemp);
+    query.exec();
+    query.next();
+    line += "DELETE FROM employee WHERE employeeid = '";
+    line += indexTemp;
+    line += "'";
+    line += "\r\n";
+    stream<<line;
 }
 
 void EmployeeForm::done(int result)
@@ -296,7 +300,16 @@ void EmployeeForm::writeSettings()
 
 void EmployeeForm::addSubRecord()
 {
-
+    SubdivisionForm openForm("",this,false);
+    openForm.exec();
+    if(openForm.rowOut() != ""){
+        QSqlQuery query;
+        query.prepare("SELECT subdivisionname FROM subdivision WHERE subdivisionid = :id");
+        query.bindValue(":id",openForm.rowOut());
+        query.exec();
+        query.next();
+        editSub->setText(query.value(0).toString());
+    }
 }
 
 void EmployeeForm::seeSubRecord()
@@ -311,15 +324,45 @@ void EmployeeForm::listSubRecord()
 
 void EmployeeForm::addPostRecord()
 {
-
+    PostForm openForm("",this,false);
+    openForm.exec();
+    if(openForm.rowOut() != ""){
+        QSqlQuery query;
+        query.prepare("SELECT postname FROM post WHERE postid = :posid");
+        query.bindValue(":posid",openForm.rowOut());
+        query.exec();
+        query.next();
+        editPost->setText(query.value(0).toString());
+    }
 }
 
 void EmployeeForm::seePostRecord()
 {
-
+    QSqlQuery query;
+    query.prepare("SELECT postid FROM post WHERE postname = :name");
+    query.bindValue(":name",editPost->text());
+    query.exec();
+    while(query.next()){
+        PostForm postForm(query.value(0).toString(),this,true);
+        postForm.exec();
+    }
 }
 
 void EmployeeForm::listPostRecord()
 {
-
+    QSqlQuery query;
+    query.prepare("SELECT postid FROM post WHERE postname = :name");
+    query.bindValue(":name",editPost->text());
+    query.exec();
+    query.next();
+//    ViewListTable listTemp(query.value(0).toString(),"post",this);
+//    listTemp.exec();
+//    if(listTemp.rowOut() != ""){
+//        QSqlQuery query;
+//        query.prepare("SELECT postname FROM post WHERE postid = :postid");
+//        query.bindValue(":postid",listTemp.rowOut());
+//        query.exec();
+//        query.next();
+//        editPost->setText(query.value(0).toString());
+//    }
 }
