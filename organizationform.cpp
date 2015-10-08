@@ -1,9 +1,9 @@
-#include "locationform.h"
+#include "organizationform.h"
 #include <QtSql>
 #include "numprefix.h"
 #include "fordelete.h"
 
-LocationForm::LocationForm(QString id, QWidget *parent, bool onlyForRead) :
+OrganizationForm::OrganizationForm(QString id, QWidget *parent, bool onlyForRead) :
     QDialog(parent)
 {
     readSettings();
@@ -32,7 +32,7 @@ LocationForm::LocationForm(QString id, QWidget *parent, bool onlyForRead) :
 
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("SELECT locationname FROM location WHERE locationid = :id");
+        query.prepare("SELECT organizationname FROM organization WHERE organizationid = :id");
         query.bindValue(":id",indexTemp);
         query.exec();
         while(query.next()){
@@ -52,7 +52,7 @@ LocationForm::LocationForm(QString id, QWidget *parent, bool onlyForRead) :
 
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Location"));
+    setWindowTitle(tr("Organization"));
 
     exchangeFile.setFileName("exchange.txt");
     if(!exchangeFile.isOpen()){
@@ -60,9 +60,9 @@ LocationForm::LocationForm(QString id, QWidget *parent, bool onlyForRead) :
     }
 }
 
-void LocationForm::editRecord()
+void OrganizationForm::editRecord()
 {
-    if(editName->text().isEmpty()){
+    if(!editName->text().isEmpty()){
         QTextStream stream(&exchangeFile);
         QString line;
         while(!stream.atEnd()){
@@ -70,37 +70,37 @@ void LocationForm::editRecord()
         }
         if(indexTemp != ""){
             QSqlQuery query;
-            query.prepare("UPDATE location SET locationname = :name"
-                          " WHERE locationid = :id");
+            query.prepare("UPDATE organization SET organizationname = :name"
+                          " WHERE organizationid = :id");
             query.bindValue(":name",editName->text());
             query.bindValue(":id",indexTemp);
             query.exec();
-            line += "UPDATE location SET locationname = '";
+            line += "UPDATE organization SET organizationname = '";
             line += editName->text().toUtf8();
-            line += "' WHERE locationid = '";
+            line += "' WHERE organizationid = '";
             line += indexTemp;
             line += "'";
             line += "\r\n";
             stream<<line;
         }else{
             QSqlQuery query;
-            query.prepare("SELECT * FROM location WHERE locationname = :name");
+            query.prepare("SELECT * FROM organization WHERE organizationname = :name");
             query.bindValue(":name",editName->text().simplified());
             query.exec();
             query.next();
             if(!query.isValid()){
                 NumPrefix numPrefix(this);
-                indexTemp = numPrefix.getPrefix("location");
+                indexTemp = numPrefix.getPrefix("organization");
                 if(indexTemp == ""){
                     close();
                 }else{
                     QSqlQuery query;
-                    query.prepare("INSERT INTO location (locationid, locationname) "
+                    query.prepare("INSERT INTO organization (organizationid, organizationname) "
                                   "VALUES(:id, :name)");
                     query.bindValue(":id",indexTemp);
                     query.bindValue(":name",editName->text().simplified());
                     query.exec();
-                    line += "INSERT INTO location (locationid, locationname) VALUES('";
+                    line += "INSERT INTO organization (organizationid, organizationname) VALUES('";
                     line += indexTemp;
                     line += "', '";
                     line += editName->text().toUtf8();
@@ -121,9 +121,9 @@ void LocationForm::editRecord()
     }
 }
 
-void LocationForm::deleteRecord()
+void OrganizationForm::deleteRecord()
 {
-    ForDelete forDelete(indexTemp,"location",this);
+    ForDelete forDelete(indexTemp,"organization",this);
     forDelete.result();
     forDelete.deleteOnDefault();
     QTextStream stream(&exchangeFile);
@@ -132,32 +132,32 @@ void LocationForm::deleteRecord()
         stream.readLine();
     }
     QSqlQuery query;
-    query.prepare("DELETE FROM location WHERE locationid = :id");
+    query.prepare("DELETE FROM organization WHERE organizationid = :id");
     query.bindValue(":id",indexTemp);
     query.exec();
     query.next();
-    line += "DELETE FROM location WHERE locationid = '";
+    line += "DELETE FROM organization WHERE organizationid = '";
     line += indexTemp;
     line += "'";
     line += "\r\n";
     stream<<line;
 }
 
-void LocationForm::done(int result)
+void OrganizationForm::done(int result)
 {
     exchangeFile.close();
     writeSettings();
     QDialog::done(result);
 }
 
-void LocationForm::readSettings()
+void OrganizationForm::readSettings()
 {
     QSettings settings("AO_Batrakov_Inc.", "MSO");
-    restoreGeometry(settings.value("Location").toByteArray());
+    restoreGeometry(settings.value("Organization").toByteArray());
 }
 
-void LocationForm::writeSettings()
+void OrganizationForm::writeSettings()
 {
     QSettings settings("AO_Batrakov_Inc.", "MSO");
-    settings.setValue("Location", saveGeometry());
+    settings.setValue("Organization", saveGeometry());
 }

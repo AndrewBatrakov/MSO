@@ -16,6 +16,9 @@
 #include "treatmentform.h"
 #include "medicalserviceform.h"
 #include "employeeform.h"
+#include "searchform.h"
+#include "organizationform.h"
+#include "preparationform.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -328,6 +331,8 @@ void MainWindow::createActions()
     connect(exitAction,SIGNAL(triggered()),this,SLOT(close()));
 
     //References Action
+    organizationAction = new QAction(tr("Organization..."),this);
+    connect(organizationAction,SIGNAL(triggered()),this,SLOT(viewOrganization()));
     nodeAction = new QAction(tr("Nodes..."),this);
     connect(nodeAction,SIGNAL(triggered()),this,SLOT(viewNode()));
     employeeAction = new QAction(tr("Employee..."),this);
@@ -346,6 +351,8 @@ void MainWindow::createActions()
     connect(locationActon,SIGNAL(triggered()),this,SLOT(viewLocation()));
     typeOfWorkAction = new QAction(tr("Type Of Work..."),this);
     connect(typeOfWorkAction,SIGNAL(triggered()),this,SLOT(viewTypeOfWork()));
+    preparationAction = new QAction(tr("Preparation..."),this);
+    connect(preparationAction,SIGNAL(triggered()),this,SLOT(viewPreparation()));
 
     //Documents Action
 
@@ -382,10 +389,12 @@ void MainWindow::createMenu()
     fileMenu->addAction(exitAction);
 
     referenceMenu = menuBar()->addMenu(tr("References"));
+    referenceMenu->addAction(organizationAction);
     referenceMenu->addAction(employeeAction);
     referenceMenu->addAction(subdivisionAction);
     referenceMenu->addAction(postAction);
     referenceMenu->addSeparator();
+    referenceMenu->addAction(preparationAction);
     referenceMenu->addAction(medicalService);
     referenceMenu->addAction(treatmentAction);
     referenceMenu->addAction(diseaseAction);
@@ -395,8 +404,8 @@ void MainWindow::createMenu()
     referenceMenu->addAction(nodeAction);
     referenceMenu->addSeparator();
 
-    //documentMenu = menuBar()->addMenu(tr("Documents"));
-    //documentMenu->addSeparator();
+    documentMenu = menuBar()->addMenu(tr("Documents"));
+    documentMenu->addSeparator();
 
     //reportMenu = menuBar()->addMenu(tr("Reports"));
     //reportMenu->addSeparator();
@@ -564,13 +573,31 @@ void MainWindow::viewTemplateTable(QString tempTable)
         strivgValue = tr("Medical Service");
     }else if(tempTable == "employee"){
         templateModel->setHeaderData(1,Qt::Horizontal,tr("FIO"));
-        templateModel->setHeaderData(2,Qt::Horizontal,tr("Subdivision"));
-        templateModel->setHeaderData(3,Qt::Horizontal,tr("Post"));
-        templateModel->setHeaderData(4,Qt::Horizontal,tr("Data Birthday"));
+        templateModel->setHeaderData(2,Qt::Horizontal,tr("Organization"));
+        templateModel->setRelation(2,QSqlRelation("organization","organizationid","organizationname"));
+        templateModel->setHeaderData(3,Qt::Horizontal,tr("Subdivision"));
+        templateModel->setRelation(3,QSqlRelation("subdivision","subdivisionid","subdivisionname"));
+        templateModel->setHeaderData(4,Qt::Horizontal,tr("Post"));
+        templateModel->setRelation(4,QSqlRelation("post","postid","postname"));
+        templateModel->setHeaderData(5,Qt::Horizontal,tr("Data Birthday"));
         if(setFilter){
             templateModel->setFilter(QString("employeename LIKE '%%1%'").arg(filterTable));
         }
-        strivgValue = tr("Medical Service");
+        strivgValue = tr("Employee");
+    }else if(tempTable == "organization"){
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("Name"));
+        if(setFilter){
+            templateModel->setFilter(QString("organizationname LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Organization");
+    }else if(tempTable == "preparation"){
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("Name"));
+        templateModel->setHeaderData(2,Qt::Horizontal,tr("Cost"));
+        templateModel->setHeaderData(3,Qt::Horizontal,tr("Expi"));
+        if(setFilter){
+            templateModel->setFilter(QString("organizationname LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Organization");
     }
     if(!delAll){
         templateModel->select();
@@ -647,6 +674,12 @@ void MainWindow::addRecordOfTable()
     }else if(valueTemp == "employee"){
         EmployeeForm form("",this,false);
         form.exec();
+    }else if(valueTemp == "organization"){
+        OrganizationForm form("",this,false);
+        form.exec();
+    }else if(valueTemp == "preparation"){
+        PreparationForm form("",this,false);
+        form.exec();
     }
     QModelIndex modIndex = tableView->currentIndex();
     MainWindow::updatePanel(modIndex);
@@ -709,6 +742,14 @@ void MainWindow::deleteRecordOfTable()
                 iDValue = record.value("employeeid").toString();
                 EmployeeForm form(iDValue,this,false);
                 form.deleteRecord();
+            }else if(valueTemp == "organization"){
+                iDValue = record.value("organizationid").toString();
+                OrganizationForm form(iDValue,this,false);
+                form.deleteRecord();
+            }else if(valueTemp == "preparation"){
+                iDValue = record.value("preparatioid").toString();
+                PreparationForm form(iDValue,this,false);
+                form.deleteRecord();
             }
         }
     }
@@ -757,6 +798,14 @@ void MainWindow::editRecordOfTable()
             QString iD = record.value("employeeid").toString();
             EmployeeForm form(iD, this, false);
             form.exec();
+        }else if(stringVar == "organization"){
+            QString iD = record.value("organizationid").toString();
+            OrganizationForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "preparation"){
+            QString iD = record.value("preparationid").toString();
+            PreparationForm form(iD, this, false);
+            form.exec();
         }
     }
 
@@ -785,7 +834,15 @@ void MainWindow::getBaseProcedure()
 
 void MainWindow::searchProcedure()
 {
-    QMessageBox::warning(this,tr("Atention!"),tr("This menu item does not work."));
+    QString valueTempModel = templateModel->tableName();
+
+    SearchForm searchForm(valueTempModel, this);
+    searchForm.exec();
+    filterTable = searchForm.rowOut();
+    setFilter = true;
+
+    viewTemplateTable(valueTempModel);
+    //QMessageBox::warning(this,tr("Atention!"),tr("This menu item does not work."));
 }
 
 void MainWindow::exchangeData()
@@ -867,4 +924,14 @@ void MainWindow::viewLocation()
 void MainWindow::viewTypeOfWork()
 {
     viewTemplateTable("typeofwork");
+}
+
+void MainWindow::viewOrganization()
+{
+    viewTemplateTable("organization");
+}
+
+void MainWindow::viewPreparation()
+{
+    viewTemplateTable("preparation");
 }

@@ -72,65 +72,69 @@ MedicalServiceForm::MedicalServiceForm(QString id, QWidget *parent, bool onlyFor
 
 void MedicalServiceForm::editRecord()
 {
-    QTextStream stream(&exchangeFile);
-    QString line;
-    while(!stream.atEnd()){
-        stream.readLine();
-    }
-    if(indexTemp != ""){
-        QSqlQuery query;
-        query.prepare("UPDATE medicalservice SET medicalservicename = :name, cost = :cost"
-                      " WHERE medicalserviceid = :id");
-        query.bindValue(":name",editName->text());
-        query.bindValue(":cost",editCost->text());
-        query.bindValue(":id",indexTemp);
-        query.exec();
-        line += "UPDATE medicalservice SET medicalservicename = '";
-        line += editName->text().toUtf8();
-        line += "', '";
-        line += editCost->text();
-        line += "' WHERE medicalserviceid = '";
-        line += indexTemp;
-        line += "'";
-        line += "\r\n";
-        stream<<line;
-    }else{
-        QSqlQuery query;
-        query.prepare("SELECT * FROM medicalservice WHERE medicalservicename = :name");
-        query.bindValue(":name",editName->text().simplified());
-        query.exec();
-        query.next();
-        if(!query.isValid()){
-            NumPrefix numPrefix(this);
-            indexTemp = numPrefix.getPrefix("medicalservice");
-            if(indexTemp == ""){
-                close();
-            }else{
-                QSqlQuery query;
-                query.prepare("INSERT INTO medicalservice (medicalserviceid, medicalservicename, cost) "
-                              "VALUES(:id, :name, :cost)");
-                query.bindValue(":id",indexTemp);
-                query.bindValue(":name",editName->text().simplified());
-                query.bindValue(":cost",editCost->text());
-                query.exec();
-                line += "INSERT INTO medicalservice (medicalserviceid, medicalservicename, cost) VALUES('";
-                line += indexTemp;
-                line += "', '";
-                line += editName->text().toUtf8();
-                line += "', '";
-                line += editCost->text();
-                line += "')";
-                line += "\r\n";
-                stream<<line;
-            }
-        }else{
-            QString tempString = editName->text();
-            tempString += QObject::tr(" is availble!");
-            QMessageBox::warning(this,QObject::tr("Attention!!!"),tempString);
+    if(!editName->text().isEmpty()){
+        QTextStream stream(&exchangeFile);
+        QString line;
+        while(!stream.atEnd()){
+            stream.readLine();
         }
+        if(indexTemp != ""){
+            QSqlQuery query;
+            query.prepare("UPDATE medicalservice SET medicalservicename = :name, cost = :cost"
+                          " WHERE medicalserviceid = :id");
+            query.bindValue(":name",editName->text());
+            query.bindValue(":cost",editCost->text());
+            query.bindValue(":id",indexTemp);
+            query.exec();
+            line += "UPDATE medicalservice SET medicalservicename = '";
+            line += editName->text().toUtf8();
+            line += "', cost = '";
+            line += editCost->text();
+            line += "' WHERE medicalserviceid = '";
+            line += indexTemp;
+            line += "'";
+            line += "\r\n";
+            stream<<line;
+        }else{
+            QSqlQuery query;
+            query.prepare("SELECT * FROM medicalservice WHERE medicalservicename = :name");
+            query.bindValue(":name",editName->text().simplified());
+            query.exec();
+            query.next();
+            if(!query.isValid()){
+                NumPrefix numPrefix(this);
+                indexTemp = numPrefix.getPrefix("medicalservice");
+                if(indexTemp == ""){
+                    close();
+                }else{
+                    QSqlQuery query;
+                    query.prepare("INSERT INTO medicalservice (medicalserviceid, medicalservicename, cost) "
+                                  "VALUES(:id, :name, :cost)");
+                    query.bindValue(":id",indexTemp);
+                    query.bindValue(":name",editName->text().simplified());
+                    query.bindValue(":cost",editCost->text());
+                    query.exec();
+                    line += "INSERT INTO medicalservice (medicalserviceid, medicalservicename, cost) VALUES('";
+                    line += indexTemp;
+                    line += "', '";
+                    line += editName->text().toUtf8();
+                    line += "', '";
+                    line += editCost->text();
+                    line += "')";
+                    line += "\r\n";
+                    stream<<line;
+                }
+            }else{
+                QString tempString = editName->text();
+                tempString += QObject::tr(" is availble!");
+                QMessageBox::warning(this,QObject::tr("Attention!!!"),tempString);
+            }
+        }
+        emit accept();
+        close();
+    }else{
+        QMessageBox::warning(this,QObject::tr("Attention!!!"),tr("Name don't be empty!"));
     }
-    emit accept();
-    close();
 }
 
 void MedicalServiceForm::deleteRecord()

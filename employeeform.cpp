@@ -4,6 +4,8 @@
 #include "fordelete.h"
 #include "subdivisionform.h"
 #include "postform.h"
+#include "viewlisttable.h"
+#include "organizationform.h"
 
 EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
     QDialog(parent)
@@ -46,6 +48,41 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
     editFIO->setValidator(new QRegExpValidator(regExp,this));
     labelFIO->setBuddy(editFIO);
 
+    labelOrg = new QLabel(tr("Organization:"));
+    editOrg = new LineEdit;
+    editOrg->setValidator(new QRegExpValidator(regExp,this));
+    QSqlQueryModel *orgModel = new QSqlQueryModel;
+    orgModel->setQuery("SELECT organizationname FROM organization");
+    QCompleter *orgComplieter = new QCompleter(orgModel);
+    orgComplieter->setCompletionMode(QCompleter::InlineCompletion);
+    orgComplieter->setCompletionMode(QCompleter::PopupCompletion);
+    orgComplieter->setCaseSensitivity(Qt::CaseInsensitive);
+    editOrg->setCompleter(orgComplieter);
+    QToolButton *addOrgButton = new QToolButton;
+    QPixmap addPix(":/add.png");
+    addOrgButton->setIcon(addPix);
+    addOrgButton->setToolTip(tr("Add new Organization"));
+    addOrgButton->setStyleSheet(styleToolButton);
+    connect(addOrgButton,SIGNAL(clicked()),this,SLOT(addOrgRecord()));
+    QToolButton *seeOrgButton = new QToolButton;
+    QPixmap seePix(":/see.png");
+    seeOrgButton->setIcon(seePix);
+    seeOrgButton->setToolTip(tr("See this Organization"));
+    seeOrgButton->setStyleSheet(styleToolButton);
+    connect(seeOrgButton,SIGNAL(clicked()),this,SLOT(seeOrgRecord()));
+    QToolButton *listOrgButton = new QToolButton;
+    QPixmap listPix(":/list.png");
+    listOrgButton->setIcon(listPix);
+    listOrgButton->setToolTip(tr("List of Organization"));
+    listOrgButton->setStyleSheet(styleToolButton);
+    connect(listOrgButton,SIGNAL(clicked()),this,SLOT(listOrgRecord()));
+    QHBoxLayout *orgLayout = new QHBoxLayout;
+    orgLayout->addWidget(editOrg);
+    orgLayout->addWidget(addOrgButton);
+    orgLayout->addWidget(seeOrgButton);
+    orgLayout->addWidget(listOrgButton);
+    orgLayout->addStretch();
+
     labelSub = new QLabel(tr("Subdivision:"));
     editSub = new LineEdit;
     editSub->setValidator(new QRegExpValidator(regExp,this));
@@ -57,19 +94,16 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
     subComplieter->setCaseSensitivity(Qt::CaseInsensitive);
     editSub->setCompleter(subComplieter);
     QToolButton *addSubButton = new QToolButton;
-    QPixmap addPix(":/add.png");
     addSubButton->setIcon(addPix);
     addSubButton->setToolTip(tr("Add new Subdivision"));
     addSubButton->setStyleSheet(styleToolButton);
     connect(addSubButton,SIGNAL(clicked()),this,SLOT(addSubRecord()));
     QToolButton *seeSubButton = new QToolButton;
-    QPixmap seePix(":/see.png");
     seeSubButton->setIcon(seePix);
     seeSubButton->setToolTip(tr("See this Subdivision"));
     seeSubButton->setStyleSheet(styleToolButton);
     connect(seeSubButton,SIGNAL(clicked()),this,SLOT(seeSubRecord()));
     QToolButton *listSubButton = new QToolButton;
-    QPixmap listPix(":/list.png");
     listSubButton->setIcon(listPix);
     listSubButton->setToolTip(tr("List of Subdivisions"));
     listSubButton->setStyleSheet(styleToolButton);
@@ -133,6 +167,7 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
     if(indexTemp != ""){
         QSqlQuery query;
         query.prepare("SELECT emp.employeename, "
+                      "(SELECT org.organizationname FROM organization AS org WHERE org.organizationid = emp.organizationid), "
                       "(SELECT sub.subdivisionname FROM subdivision AS sub WHERE sub.subdivisionid = emp.subdivisionid), "
                       "(SELECT pos.postname FROM post AS pos WHERE pos.postid = emp.postid), "
                       "birthday FROM employee AS emp WHERE emp.employeeid = :id");
@@ -140,12 +175,14 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
         query.exec();
         while(query.next()){
             editFIO->setText(query.value(0).toString());
-            editSub->setText(query.value(1).toString());
-            editPost->setText(query.value(2).toString());
-            editDate->setDate(query.value(3).toDate());
+            editOrg->setText(query.value(1).toString());
+            editSub->setText(query.value(2).toString());
+            editPost->setText(query.value(3).toString());
+            editDate->setDate(query.value(4).toDate());
         }
     }else{
         editFIO->clear();
+        editOrg->clear();
         editSub->clear();
         editPost->clear();
         editDate->clear();
@@ -154,14 +191,16 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(labelFIO,0,0);
     mainLayout->addWidget(editFIO,0,1);
-    mainLayout->addWidget(labelSub,1,0);
-    mainLayout->addLayout(subLayout,1,1);
-    mainLayout->addWidget(labelPost,2,0);
-    mainLayout->addLayout(postLayout,2,1);
-    mainLayout->addWidget(labelDate,3,0);
-    mainLayout->addWidget(editDate,3,1);
+    mainLayout->addWidget(labelOrg,1,0);
+    mainLayout->addLayout(orgLayout,1,1);
+    mainLayout->addWidget(labelSub,2,0);
+    mainLayout->addLayout(subLayout,2,1);
+    mainLayout->addWidget(labelPost,3,0);
+    mainLayout->addLayout(postLayout,3,1);
+    mainLayout->addWidget(labelDate,4,0);
+    mainLayout->addWidget(editDate,4,1);
     if(!onlyForRead){
-        mainLayout->addWidget(buttonBox,4,1);
+        mainLayout->addWidget(buttonBox,5,1);
         editFIO->selectAll();
     }
 
@@ -177,84 +216,96 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
 
 void EmployeeForm::editRecord()
 {
-    QTextStream stream(&exchangeFile);
-    QString line;
-    while(!stream.atEnd()){
-        stream.readLine();
-    }
-    if(indexTemp != ""){
-        QSqlQuery query;
-        query.prepare("UPDATE employee SET employeename = :name, "
-                      "subdivisionid = (SELECT subdivisionid FROM subdivision WHERE subdivisionname = :subname), "
-                      "postid = (SELECT postid FROM post WHERE postname = :postname), "
-                      "birthday = :date"
-                      " WHERE employeeid = :id");
-        query.bindValue(":name",editFIO->text());
-        query.bindValue(":id",indexTemp);
-        query.bindValue(":subname",editSub->text());
-        query.bindValue(":postname",editPost->text());
-        query.bindValue(":date",editDate->date());
-        query.exec();
-        line += "UPDATE employee SET employeename = '";
-        line += editFIO->text().toUtf8();
-        line += "', subdivisionid = (SELECT subdivisionid FROM subdivision WHERE subdivisionname = '";
-        line += editSub->text().toUtf8();
-        line += "'), postid = (SELECT postid FROM post WHERE postname = '";
-        line += editPost->text().toUtf8();
-        line += "'), birthday = '";
-        line += editDate->date().toString();
-        line += "' WHERE employeeid = '";
-        line += indexTemp;
-        line += "'";
-        line += "\r\n";
-        stream<<line;
-    }else{
-        QSqlQuery query;
-        query.prepare("SELECT * FROM employee WHERE employeename = :name AND birthday = :date");
-        query.bindValue(":name",editFIO->text().simplified());
-        query.bindValue(":date",editDate->date());
-        query.exec();
-        query.next();
-        if(!query.isValid()){
-            NumPrefix numPrefix(this);
-            indexTemp = numPrefix.getPrefix("employee");
-            if(indexTemp == ""){
-                close();
-            }else{
-                QSqlQuery query;
-                query.prepare("INSERT INTO employee (employeeid, employeename, subdivisionid, postid, birthday) "
-                              "VALUES(:id, :name, "
-                              "(SELECT subdivisionid FROM subdivision WHERE subdivisionname = :subname), "
-                              "(SELECT postid FROM post WHERE postname = :postname), "
-                              ":date)");
-                query.bindValue(":id",indexTemp);
-                query.bindValue(":name",editFIO->text().simplified());
-                query.bindValue(":subname",editSub->text());
-                query.bindValue(":postname",editPost->text());
-                query.bindValue(":date",editDate->date());
-                query.exec();
-                line += "INSERT INTO employee  (employeeid, employeename, subdivisionid, postid, birthday) VALUES('";
-                line += indexTemp;
-                line += "', '";
-                line += editFIO->text().toUtf8();
-                line += "', (SELECT subdivisionid FROM subdivision WHERE subdivisionname = '";
-                line += editSub->text().toUtf8();
-                line += "'), (SELECT postid FROM post WHERE postname = '";
-                line += editPost->text().toUtf8();
-                line += "'), ";
-                line += editDate->date().toString();
-                line += "')";
-                line += "\r\n";
-                stream<<line;
-            }
-        }else{
-            QString tempString = editFIO->text();
-            tempString += QObject::tr(" is availble!");
-            QMessageBox::warning(this,QObject::tr("Attention!!!"),tempString);
+    if(!editFIO->text().isEmpty()){
+        QTextStream stream(&exchangeFile);
+        QString line;
+        while(!stream.atEnd()){
+            stream.readLine();
         }
+        if(indexTemp != ""){
+            QSqlQuery query;
+            query.prepare("UPDATE employee SET employeename = :name, "
+                          "organizationid = (SELECT organizationid FROM organization WHERE organizationname = :orgname), "
+                          "subdivisionid = (SELECT subdivisionid FROM subdivision WHERE subdivisionname = :subname), "
+                          "postid = (SELECT postid FROM post WHERE postname = :postname), "
+                          "birthday = :date"
+                          " WHERE employeeid = :id");
+            query.bindValue(":name",editFIO->text());
+            query.bindValue(":id",indexTemp);
+            query.bindValue(":orgname",editOrg->text());
+            query.bindValue(":subname",editSub->text());
+            query.bindValue(":postname",editPost->text());
+            query.bindValue(":date",editDate->date());
+            query.exec();
+            line += "UPDATE employee SET employeename = '";
+            line += editFIO->text().toUtf8();
+            line += "', organizationid = (SELECT organizationid FROM organization WHERE organizationname = '";
+            line += editOrg->text().toUtf8();
+            line += "', subdivisionid = (SELECT subdivisionid FROM subdivision WHERE subdivisionname = '";
+            line += editSub->text().toUtf8();
+            line += "'), postid = (SELECT postid FROM post WHERE postname = '";
+            line += editPost->text().toUtf8();
+            line += "'), birthday = '";
+            line += editDate->date().toString();
+            line += "' WHERE employeeid = '";
+            line += indexTemp;
+            line += "'";
+            line += "\r\n";
+            stream<<line;
+        }else{
+            QSqlQuery query;
+            query.prepare("SELECT * FROM employee WHERE employeename = :name AND birthday = :date");
+            query.bindValue(":name",editFIO->text().simplified());
+            query.bindValue(":date",editDate->date());
+            query.exec();
+            query.next();
+            if(!query.isValid()){
+                NumPrefix numPrefix(this);
+                indexTemp = numPrefix.getPrefix("employee");
+                if(indexTemp == ""){
+                    close();
+                }else{
+                    QSqlQuery query;
+                    query.prepare("INSERT INTO employee (employeeid, employeename, organizationid, subdivisionid, postid, birthday) "
+                                  "VALUES(:id, :name, "
+                                  "(SELECT organizationid FROM organization WHERE organizationname = :orgname), "
+                                  "(SELECT subdivisionid FROM subdivision WHERE subdivisionname = :subname), "
+                                  "(SELECT postid FROM post WHERE postname = :postname), "
+                                  ":date)");
+                    query.bindValue(":id",indexTemp);
+                    query.bindValue(":name",editFIO->text().simplified());
+                    query.bindValue(":orgname",editOrg->text());
+                    query.bindValue(":subname",editSub->text());
+                    query.bindValue(":postname",editPost->text());
+                    query.bindValue(":date",editDate->date());
+                    query.exec();
+                    line += "INSERT INTO employee  (employeeid, employeename, organizationid, subdivisionid, postid, birthday) VALUES('";
+                    line += indexTemp;
+                    line += "', '";
+                    line += editFIO->text().toUtf8();
+                    line += "', (SELECT organizationid FROM organization WHERE organizationname = '";
+                    line += editOrg->text().toUtf8();
+                    line += "', (SELECT subdivisionid FROM subdivision WHERE subdivisionname = '";
+                    line += editSub->text().toUtf8();
+                    line += "'), (SELECT postid FROM post WHERE postname = '";
+                    line += editPost->text().toUtf8();
+                    line += "'), ";
+                    line += editDate->date().toString();
+                    line += "')";
+                    line += "\r\n";
+                    stream<<line;
+                }
+            }else{
+                QString tempString = editFIO->text();
+                tempString += QObject::tr(" is availble!");
+                QMessageBox::warning(this,QObject::tr("Attention!!!"),tempString);
+            }
+        }
+        emit accept();
+        close();
+    }else{
+        QMessageBox::warning(this,QObject::tr("Attention!!!"),tr("FIO don't be empty!"));
     }
-    emit accept();
-    close();
 }
 
 void EmployeeForm::deleteRecord()
@@ -314,12 +365,33 @@ void EmployeeForm::addSubRecord()
 
 void EmployeeForm::seeSubRecord()
 {
-
+    QSqlQuery query;
+    query.prepare("SELECT subdivisionid FROM subdivision WHERE subdivisionname = :name");
+    query.bindValue(":name",editSub->text());
+    query.exec();
+    while(query.next()){
+        SubdivisionForm openForm(query.value(0).toString(),this,true);
+        openForm.exec();
+    }
 }
 
 void EmployeeForm::listSubRecord()
 {
-
+    QSqlQuery query;
+    query.prepare("SELECT subdivisionid FROM subdivision WHERE subdivisionname = :name");
+    query.bindValue(":name",editSub->text());
+    query.exec();
+    query.next();
+    ViewListTable listTemp(query.value(0).toString(),"subdivision",this);
+    listTemp.exec();
+    if(listTemp.rowOut() != ""){
+        QSqlQuery query;
+        query.prepare("SELECT subdivisionname FROM subdivision WHERE subdivisionid = :id");
+        query.bindValue(":id",listTemp.rowOut());
+        query.exec();
+        query.next();
+        editSub->setText(query.value(0).toString());
+    }
 }
 
 void EmployeeForm::addPostRecord()
@@ -355,14 +427,59 @@ void EmployeeForm::listPostRecord()
     query.bindValue(":name",editPost->text());
     query.exec();
     query.next();
-//    ViewListTable listTemp(query.value(0).toString(),"post",this);
-//    listTemp.exec();
-//    if(listTemp.rowOut() != ""){
-//        QSqlQuery query;
-//        query.prepare("SELECT postname FROM post WHERE postid = :postid");
-//        query.bindValue(":postid",listTemp.rowOut());
-//        query.exec();
-//        query.next();
-//        editPost->setText(query.value(0).toString());
-//    }
+    ViewListTable listTemp(query.value(0).toString(),"post",this);
+    listTemp.exec();
+    if(listTemp.rowOut() != ""){
+        QSqlQuery query;
+        query.prepare("SELECT postname FROM post WHERE postid = :postid");
+        query.bindValue(":postid",listTemp.rowOut());
+        query.exec();
+        query.next();
+        editPost->setText(query.value(0).toString());
+    }
+}
+
+void EmployeeForm::addOrgRecord()
+{
+    OrganizationForm openForm("",this,false);
+    openForm.exec();
+    if(openForm.rowOut() != ""){
+        QSqlQuery query;
+        query.prepare("SELECT organizationname FROM organization WHERE organizationid = :id");
+        query.bindValue(":id",openForm.rowOut());
+        query.exec();
+        query.next();
+        editOrg->setText(query.value(0).toString());
+    }
+}
+
+void EmployeeForm::seeOrgRecord()
+{
+    QSqlQuery query;
+    query.prepare("SELECT organizationid FROM organization WHERE organizationname = :name");
+    query.bindValue(":name",editOrg->text());
+    query.exec();
+    while(query.next()){
+        OrganizationForm openForm(query.value(0).toString(),this,true);
+        openForm.exec();
+    }
+}
+
+void EmployeeForm::listOrgRecord()
+{
+    QSqlQuery query;
+    query.prepare("SELECT organizationid FROM organization WHERE organizationname = :name");
+    query.bindValue(":name",editOrg->text());
+    query.exec();
+    query.next();
+    ViewListTable listTemp(query.value(0).toString(),"organization",this);
+    listTemp.exec();
+    if(listTemp.rowOut() != ""){
+        QSqlQuery query;
+        query.prepare("SELECT organizationname FROM organization WHERE organizationid = :id");
+        query.bindValue(":id",listTemp.rowOut());
+        query.exec();
+        query.next();
+        editOrg->setText(query.value(0).toString());
+    }
 }

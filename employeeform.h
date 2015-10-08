@@ -21,6 +21,9 @@ private slots:
     void readSettings();
     void writeSettings();
 
+    void addOrgRecord();
+    void seeOrgRecord();
+    void listOrgRecord();
     void addSubRecord();
     void seeSubRecord();
     void listSubRecord();
@@ -31,6 +34,8 @@ private slots:
 private:
     QLabel *labelFIO;
     LineEdit *editFIO;
+    QLabel *labelOrg;
+    LineEdit *editOrg;
     QLabel *labelSub;
     LineEdit *editSub;
     QLabel *labelPost;

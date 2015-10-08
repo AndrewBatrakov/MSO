@@ -16,7 +16,8 @@ HEADERS += \
     $$PWD/mystyle.h \
     $$PWD/putbase.h \
     $$PWD/smtpform.h \
-    $$PWD/viewlisttable.h
+    $$PWD/viewlisttable.h \
+    $$PWD/searchform.h
 
 SOURCES += \
     $$PWD/update.cpp \
@@ -36,4 +37,5 @@ SOURCES += \
     $$PWD/mystyle.cpp \
     $$PWD/putbase.cpp \
     $$PWD/smtpform.cpp \
-    $$PWD/viewlisttable.cpp
+    $$PWD/viewlisttable.cpp \
+    $$PWD/searchform.cpp

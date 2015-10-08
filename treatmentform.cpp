@@ -62,59 +62,63 @@ TreatmentForm::TreatmentForm(QString id, QWidget *parent, bool onlyForRead) :
 
 void TreatmentForm::editRecord()
 {
-    QTextStream stream(&exchangeFile);
-    QString line;
-    while(!stream.atEnd()){
-        stream.readLine();
-    }
-    if(indexTemp != ""){
-        QSqlQuery query;
-        query.prepare("UPDATE treatment SET treatmentname = :name"
-                      " WHERE treatmentid = :id");
-        query.bindValue(":name",editName->text());
-        query.bindValue(":id",indexTemp);
-        query.exec();
-        line += "UPDATE treatment SET treatmentname = '";
-        line += editName->text().toUtf8();
-        line += "' WHERE treatmentid = '";
-        line += indexTemp;
-        line += "'";
-        line += "\r\n";
-        stream<<line;
-    }else{
-        QSqlQuery query;
-        query.prepare("SELECT * FROM treatment WHERE treatmentname = :name");
-        query.bindValue(":name",editName->text().simplified());
-        query.exec();
-        query.next();
-        if(!query.isValid()){
-            NumPrefix numPrefix(this);
-            indexTemp = numPrefix.getPrefix("treatment");
-            if(indexTemp == ""){
-                close();
-            }else{
-                QSqlQuery query;
-                query.prepare("INSERT INTO treatment (treatmentid, treatmentname) "
-                              "VALUES(:id, :name)");
-                query.bindValue(":id",indexTemp);
-                query.bindValue(":name",editName->text().simplified());
-                query.exec();
-                line += "INSERT INTO treatment (treatmentid, treatmentname) VALUES('";
-                line += indexTemp;
-                line += "', '";
-                line += editName->text().toUtf8();
-                line += "')";
-                line += "\r\n";
-                stream<<line;
-            }
-        }else{
-            QString tempString = editName->text();
-            tempString += QObject::tr(" is availble!");
-            QMessageBox::warning(this,QObject::tr("Attention!!!"),tempString);
+    if(!editName->text().isEmpty()){
+        QTextStream stream(&exchangeFile);
+        QString line;
+        while(!stream.atEnd()){
+            stream.readLine();
         }
+        if(indexTemp != ""){
+            QSqlQuery query;
+            query.prepare("UPDATE treatment SET treatmentname = :name"
+                          " WHERE treatmentid = :id");
+            query.bindValue(":name",editName->text());
+            query.bindValue(":id",indexTemp);
+            query.exec();
+            line += "UPDATE treatment SET treatmentname = '";
+            line += editName->text().toUtf8();
+            line += "' WHERE treatmentid = '";
+            line += indexTemp;
+            line += "'";
+            line += "\r\n";
+            stream<<line;
+        }else{
+            QSqlQuery query;
+            query.prepare("SELECT * FROM treatment WHERE treatmentname = :name");
+            query.bindValue(":name",editName->text().simplified());
+            query.exec();
+            query.next();
+            if(!query.isValid()){
+                NumPrefix numPrefix(this);
+                indexTemp = numPrefix.getPrefix("treatment");
+                if(indexTemp == ""){
+                    close();
+                }else{
+                    QSqlQuery query;
+                    query.prepare("INSERT INTO treatment (treatmentid, treatmentname) "
+                                  "VALUES(:id, :name)");
+                    query.bindValue(":id",indexTemp);
+                    query.bindValue(":name",editName->text().simplified());
+                    query.exec();
+                    line += "INSERT INTO treatment (treatmentid, treatmentname) VALUES('";
+                    line += indexTemp;
+                    line += "', '";
+                    line += editName->text().toUtf8();
+                    line += "')";
+                    line += "\r\n";
+                    stream<<line;
+                }
+            }else{
+                QString tempString = editName->text();
+                tempString += QObject::tr(" is availble!");
+                QMessageBox::warning(this,QObject::tr("Attention!!!"),tempString);
+            }
+        }
+        emit accept();
+        close();
+    }else{
+        QMessageBox::warning(this,QObject::tr("Attention!!!"),tr("Name don't be empty!"));
     }
-    emit accept();
-    close();
 }
 
 void TreatmentForm::deleteRecord()

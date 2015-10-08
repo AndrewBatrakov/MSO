@@ -39,6 +39,8 @@ private slots:
     void viewDisease();
     void viewLocation();
     void viewTypeOfWork();
+    void viewOrganization();
+    void viewPreparation();
 
     void putBaseProcedure();
     void getBaseProcedure();
@@ -81,8 +83,10 @@ private:
     QAction *diseaseAction;
     QAction *locationActon;
     QAction *typeOfWorkAction;
+    QAction *organizationAction;
+    QAction *preparationAction;
 
-    //QMenu *documentMenu;
+    QMenu *documentMenu;
 
     //QMenu *reportMenu;
 

@@ -11,6 +11,7 @@
 #include "subdivisionform.h"
 #include "treatmentform.h"
 #include "typeofworkform.h"
+#include "searchform.h"
 
 ViewListTable::ViewListTable(QString idTable, QString nameTable, QWidget *parent) :
     QDialog(parent)
@@ -183,66 +184,78 @@ void ViewListTable::done(int res)
 
 void ViewListTable::addRecord()
 {
-//    QString nameList;
-//    if(tableName == "organization"){
-//        OrganizationForm listForm("",this,false);
-//        listForm.exec();
-//        nameList = listForm.rowOut();
-//    }else if(tableName == "subdivision"){
-//        SubDivisionForm listForm("",this,false);
-//        listForm.exec();
-//        nameList = listForm.rowOut();
-//    }else if(tableName == "legalacts"){
-//        LegalAct listForm("",this,false);
-//        listForm.exec();
-//        nameList = listForm.rowOut();
-//    }else if(tableName == "safetyreq"){
-//        SafetyRequirements listForm("",this,false);
-//        listForm.exec();
-//        nameList = listForm.rowOut();
-//    }else if(tableName == "testtask"){
-//        TestTask listForm("",this,false);
-//        listForm.exec();
-//        nameList = listForm.rowOut();
-//    }else if(tableName == "empcertdate"){
-//        EmpCertDate listForm("",this,false);
-//        listForm.exec();
-//        nameList = listForm.rowOut();
-//    }
-//    templateModel->select();
-//    for(int row = 0; row < templateModel->rowCount(); ++row){
-//        QSqlRecord record = templateModel->record(row);
-//        QModelIndex index = templateModel->index(row,1);
-//        if(record.value(0).toString() == nameList){
-//            tableView->setCurrentIndex(index);
-//            updatePanel(index);
-//            break;
-//        }
-//    }
+    QString nameList;
+    if(tableName == "disease"){
+        DiseaseForm listForm("",this,false);
+        listForm.exec();
+        nameList = listForm.rowOut();
+    }else if(tableName == "subdivision"){
+        SubdivisionForm listForm("",this,false);
+        listForm.exec();
+        nameList = listForm.rowOut();
+    }else if(tableName == "employee"){
+        EmployeeForm listForm("",this,false);
+        listForm.exec();
+        nameList = listForm.rowOut();
+    }else if(tableName == "location"){
+        LocationForm listForm("",this,false);
+        listForm.exec();
+        nameList = listForm.rowOut();
+    }else if(tableName == "medicalservice"){
+        MedicalServiceForm listForm("",this,false);
+        listForm.exec();
+        nameList = listForm.rowOut();
+    }else if(tableName == "node"){
+        NodeForm listForm("",this,false);
+        listForm.exec();
+        nameList = listForm.rowOut();
+    }else if(tableName == "post"){
+        PostForm listForm("",this,false);
+        listForm.exec();
+        nameList = listForm.rowOut();
+    }else if(tableName == "treatment"){
+        TreatmentForm listForm("",this,false);
+        listForm.exec();
+        nameList = listForm.rowOut();
+    }else if(tableName == "typeofwork"){
+        TypeOfWorkForm listForm("",this,false);
+        listForm.exec();
+        nameList = listForm.rowOut();
+    }
+    templateModel->select();
+    for(int row = 0; row < templateModel->rowCount(); ++row){
+        QSqlRecord record = templateModel->record(row);
+        QModelIndex index = templateModel->index(row,1);
+        if(record.value(0).toString() == nameList){
+            tableView->setCurrentIndex(index);
+            updatePanel(index);
+            break;
+        }
+    }
 }
 
 void ViewListTable::deleteRecord()
 {
-//    QMessageBox msgBox(this);
-//    msgBox.setWindowTitle(tr("Attention!!!"));
-//    msgBox.setText(tr("Really delete?"));
-//    msgBox.setIcon(QMessageBox::Question);
-//    msgBox.addButton(QMessageBox::Yes);
-//    QPushButton *noButton = msgBox.addButton(QMessageBox::No);
-//    msgBox.setDefaultButton(noButton);
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(tr("Attention!!!"));
+    msgBox.setText(tr("Really delete?"));
+    msgBox.setIcon(QMessageBox::Question);
+    msgBox.addButton(QMessageBox::Yes);
+    QPushButton *noButton = msgBox.addButton(QMessageBox::No);
+    msgBox.setDefaultButton(noButton);
 
-//    noButton->setStyleSheet("QPushButton:hover {color: red}");
-//    int k = msgBox.exec();
-//    if(k == QMessageBox::Yes){
-//        QModelIndex index = tableView->currentIndex();
-//        QSqlRecord record = templateModel->record(index.row());
-//        QString idList = record.value(0).toString();
-//        if(tableName == "organization"){
-//            OrganizationForm listForm(idList,this,false);
-//            listForm.deleteRecordOrganization();
-//        }else if(tableName == "subdivision"){
-//            SubDivisionForm listForm(idList,this,false);
-//            listForm.deleteSubdivision();
+    noButton->setStyleSheet("QPushButton:hover {color: red}");
+    int k = msgBox.exec();
+    if(k == QMessageBox::Yes){
+        QModelIndex index = tableView->currentIndex();
+        QSqlRecord record = templateModel->record(index.row());
+        QString idList = record.value(0).toString();
+        if(tableName == "post"){
+            PostForm listForm(idList,this,false);
+            listForm.deleteRecord();
+        }else if(tableName == "subdivision"){
+            SubdivisionForm listForm(idList,this,false);
+            listForm.deleteRecord();
 //        }else if(tableName == "legalacts"){
 //            LegalAct listForm(idList,this,false);
 //            listForm.deleteRecord();
@@ -252,22 +265,22 @@ void ViewListTable::deleteRecord()
 //        }else if(tableName == "testtask"){
 //            TestTask listForm(idList,this,false);
 //            listForm.deleteRecord();
-//        }
-//        updatePanel(index);
-//    }
+        }
+        updatePanel(index);
+    }
 }
 
 void ViewListTable::editRecord()
 {
-//    QModelIndex index = tableView->currentIndex();
-//    QSqlRecord record = templateModel->record(index.row());
-//    QString idList = record.value(0).toString();
-//    if(tableName == "organization"){
-//        OrganizationForm listFrom(idList,this,false);
-//        listFrom.exec();
-//    }else if(tableName == "subdivision"){
-//        SubDivisionForm listFrom(idList,this,false);
-//        listFrom.exec();
+    QModelIndex index = tableView->currentIndex();
+    QSqlRecord record = templateModel->record(index.row());
+    QString idList = record.value(0).toString();
+    if(tableName == "post"){
+        PostForm listFrom(idList,this,false);
+        listFrom.exec();
+    }else if(tableName == "subdivision"){
+        SubdivisionForm listFrom(idList,this,false);
+        listFrom.exec();
 //    }else if(tableName == "legalacts"){
 //        LegalAct listFrom(idList,this,false);
 //        listFrom.exec();
@@ -280,8 +293,8 @@ void ViewListTable::editRecord()
 //    }else if(tableName == "empcertdate"){
 //        EmpCertDate listFrom(idList,this,false);
 //        listFrom.exec();
-//    }
-//    updatePanel(index);
+    }
+    updatePanel(index);
 }
 
 void ViewListTable::updatePanel(QModelIndex index)
@@ -317,9 +330,9 @@ void ViewListTable::searchProcedure()
 {
     QString valueTempModel = templateModel->tableName();
 
-//    SearchForm searchForm(valueTempModel, this);
-//    searchForm.exec();
-//    filterTable = searchForm.rowOut();
+    SearchForm searchForm(valueTempModel, this);
+    searchForm.exec();
+    filterTable = searchForm.rowOut();
     setFilter = true;
 
     viewTemplateTable(valueTempModel);
