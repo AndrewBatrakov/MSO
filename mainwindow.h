@@ -41,6 +41,7 @@ private slots:
     void viewTypeOfWork();
     void viewOrganization();
     void viewPreparation();
+    void viewPreparationDoc();
 
     void putBaseProcedure();
     void getBaseProcedure();
@@ -87,6 +88,7 @@ private:
     QAction *preparationAction;
 
     QMenu *documentMenu;
+    QAction *preparationDocAction;
 
     //QMenu *reportMenu;
 

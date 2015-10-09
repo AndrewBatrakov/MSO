@@ -149,6 +149,7 @@ EmployeeForm::EmployeeForm(QString id, QWidget *parent, bool onlyForRead) :
 
     labelDate = new QLabel(tr("Birthday:"));
     editDate = new QDateEdit;
+    editDate->setCalendarPopup(true);
 
     saveButton = new QPushButton(tr("Save"));
     connect(saveButton,SIGNAL(clicked()),this,SLOT(editRecord()));

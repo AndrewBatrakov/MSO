@@ -19,6 +19,7 @@
 #include "searchform.h"
 #include "organizationform.h"
 #include "preparationform.h"
+#include "treatmentdocform.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -355,6 +356,8 @@ void MainWindow::createActions()
     connect(preparationAction,SIGNAL(triggered()),this,SLOT(viewPreparation()));
 
     //Documents Action
+    preparationDocAction = new QAction(tr("Preparation Document..."),this);
+    connect(preparationDocAction,SIGNAL(triggered()),this,SLOT(viewPreparationDoc()));
 
     //Reports Action
 
@@ -405,6 +408,7 @@ void MainWindow::createMenu()
     referenceMenu->addSeparator();
 
     documentMenu = menuBar()->addMenu(tr("Documents"));
+    documentMenu->addAction(preparationDocAction);
     documentMenu->addSeparator();
 
     //reportMenu = menuBar()->addMenu(tr("Reports"));
@@ -598,13 +602,22 @@ void MainWindow::viewTemplateTable(QString tempTable)
             templateModel->setFilter(QString("organizationname LIKE '%%1%'").arg(filterTable));
         }
         strivgValue = tr("Organization");
+    }else if(tempTable == "treatmentdoc"){
+        templateModel->setHeaderData(0,Qt::Horizontal,tr("Number"));
+        templateModel->setHeaderData(1,Qt::Horizontal,tr("Date"));
+        templateModel->setHeaderData(2,Qt::Horizontal,tr("FIO"));
+        templateModel->setRelation(2,QSqlRelation("employee","employeeid","employeename"));
+        if(setFilter){
+            templateModel->setFilter(QString("employeename LIKE '%%1%'").arg(filterTable));
+        }
+        strivgValue = tr("Treatment Doc");
     }
     if(!delAll){
         templateModel->select();
         QHeaderView *head = tableView->horizontalHeader();
         connect(head,SIGNAL(sectionClicked(int)),this,SLOT(sortTable(int)));
         tableView->setModel(templateModel);
-        if(tempTable == "users" || tempTable == "nodes" || tempTable == "contractdoc"){
+        if(tempTable == "treatmentdoc" || tempTable == "nodes" || tempTable == "contractdoc"){
             tableView->setColumnHidden(0, false);
         }else{
             tableView->setColumnHidden(0, true);
@@ -680,6 +693,9 @@ void MainWindow::addRecordOfTable()
     }else if(valueTemp == "preparation"){
         PreparationForm form("",this,false);
         form.exec();
+    }else if(valueTemp == "treatmentdoc"){
+        TreatmentDocForm form("",this,false);
+        form.exec();
     }
     QModelIndex modIndex = tableView->currentIndex();
     MainWindow::updatePanel(modIndex);
@@ -750,6 +766,10 @@ void MainWindow::deleteRecordOfTable()
                 iDValue = record.value("preparatioid").toString();
                 PreparationForm form(iDValue,this,false);
                 form.deleteRecord();
+            }else if(valueTemp == "treatmentdoc"){
+                iDValue = record.value("treatmentdocid").toString();
+                TreatmentDocForm form(iDValue,this,false);
+                form.deleteRecord();
             }
         }
     }
@@ -805,6 +825,10 @@ void MainWindow::editRecordOfTable()
         }else if(stringVar == "preparation"){
             QString iD = record.value("preparationid").toString();
             PreparationForm form(iD, this, false);
+            form.exec();
+        }else if(stringVar == "treatmentdoc"){
+            QString iD = record.value("treatmendoctid").toString();
+            TreatmentDocForm form(iD, this, false);
             form.exec();
         }
     }
@@ -934,4 +958,9 @@ void MainWindow::viewOrganization()
 void MainWindow::viewPreparation()
 {
     viewTemplateTable("preparation");
+}
+
+void MainWindow::viewPreparationDoc()
+{
+    viewTemplateTable("treatmentdoc");
 }
