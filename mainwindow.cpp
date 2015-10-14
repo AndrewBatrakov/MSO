@@ -124,8 +124,8 @@ MainWindow::MainWindow(QWidget *parent)
                            "border-top-right-radius: 5px;"
                            "border-top-left-radius: 5px;"
                            "border-bottom-right-radius: 5px;"
-                           "border-bottom-left-radius: 5px;"
-                           "top: -0.5em}"
+                           "border-bottom-left-radius: 5px;}"
+
 
                            "QTabWidget::tab-bar {"
                            "left: 5px;}"
@@ -219,7 +219,9 @@ MainWindow::MainWindow(QWidget *parent)
     createContextMenu();
     viewNode();
 
-    /*"QDoubleSpinBox {padding-left: 15px; padding-right: 15px; border: 1px;}"
+    /*"top: -0.5em}"
+     *
+     * "QDoubleSpinBox {padding-left: 15px; padding-right: 15px; border: 1px;}"
 
     "QDoubleSpinBox::up-button {subcontrol-position: right; subcontrol-origin: border; "
     "min-width: 15px; min-height: 15px;"

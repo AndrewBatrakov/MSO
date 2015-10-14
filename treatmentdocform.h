@@ -3,6 +3,7 @@
 
 #include <QtWidgets>
 #include "lineedit.h"
+#include <QtSql>
 
 class TreatmentDocForm : public QDialog
 {
@@ -43,6 +44,9 @@ private:
     QPushButton *saveButton;
     QPushButton *cancelButton;
     QDialogButtonBox *buttonBox;
+
+    QTableView *tableView;
+    QSqlRelationalTableModel *templateModel;
 
     QString indexTemp;
     QFile exchangeFile;
