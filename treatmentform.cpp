@@ -16,6 +16,11 @@ TreatmentForm::TreatmentForm(QString id, QWidget *parent, bool onlyForRead) :
     editName->setValidator(new QRegExpValidator(regExp,this));
     labelName->setBuddy(editName);
 
+    labelCost = new QLabel(tr("Cost:"));
+    editCost = new LineEdit;
+    QRegExp regCost("^([1-9][0-9]*|0)(\\.|,)[0-9]{2}");
+    editCost->setValidator(new QRegExpValidator(regCost,this));
+
     saveButton = new QPushButton(tr("Save"));
     connect(saveButton,SIGNAL(clicked()),this,SLOT(editRecord()));
     saveButton->setToolTip(tr("Save And Close Button"));
@@ -32,11 +37,13 @@ TreatmentForm::TreatmentForm(QString id, QWidget *parent, bool onlyForRead) :
 
     if(indexTemp != ""){
         QSqlQuery query;
-        query.prepare("SELECT treatmentname FROM treatment WHERE treatmentid = :id");
+        query.prepare("SELECT treatmentname, cost FROM treatment WHERE treatmentid = :id");
         query.bindValue(":id",indexTemp);
         query.exec();
         while(query.next()){
             editName->setText(query.value(0).toString());
+            double tt = query.value(1).toDouble();
+            editCost->setText(QString::number(tt,'f',2));
         }
     }else{
         editName->clear();
@@ -70,13 +77,16 @@ void TreatmentForm::editRecord()
         }
         if(indexTemp != ""){
             QSqlQuery query;
-            query.prepare("UPDATE treatment SET treatmentname = :name"
+            query.prepare("UPDATE treatment SET treatmentname = :name, cost = :cost"
                           " WHERE treatmentid = :id");
             query.bindValue(":name",editName->text());
+            query.bindValue(":cost",editCost->text());
             query.bindValue(":id",indexTemp);
             query.exec();
             line += "UPDATE treatment SET treatmentname = '";
             line += editName->text().toUtf8();
+            line += "', cost = '";
+            line += editCost->text();
             line += "' WHERE treatmentid = '";
             line += indexTemp;
             line += "'";
@@ -95,15 +105,18 @@ void TreatmentForm::editRecord()
                     close();
                 }else{
                     QSqlQuery query;
-                    query.prepare("INSERT INTO treatment (treatmentid, treatmentname) "
-                                  "VALUES(:id, :name)");
+                    query.prepare("INSERT INTO treatment (treatmentid, treatmentname, cost) "
+                                  "VALUES(:id, :name, :cost)");
                     query.bindValue(":id",indexTemp);
                     query.bindValue(":name",editName->text().simplified());
+                    query.bindValue(":cost",editCost->text());
                     query.exec();
                     line += "INSERT INTO treatment (treatmentid, treatmentname) VALUES('";
                     line += indexTemp;
                     line += "', '";
                     line += editName->text().toUtf8();
+                    line += "', cost = '";
+                    line += editCost->text();
                     line += "')";
                     line += "\r\n";
                     stream<<line;

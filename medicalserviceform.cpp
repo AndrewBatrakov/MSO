@@ -13,7 +13,7 @@ MedicalServiceForm::MedicalServiceForm(QString id, QWidget *parent, bool onlyFor
     editName = new LineEdit;
     editName->setReadOnly(onlyForRead);
     QRegExp regExp("[\\x0410-\\x044f 0-9 \" -]{150}");
-    editName->setValidator(new QRegExpValidator(regExp,this));
+    //editName->setValidator(new QRegExpValidator(regExp,this));
     labelName->setBuddy(editName);
 
     labelCost = new QLabel(tr("Cost:"));
@@ -41,7 +41,6 @@ MedicalServiceForm::MedicalServiceForm(QString id, QWidget *parent, bool onlyFor
         query.bindValue(":id",indexTemp);
         query.exec();
         while(query.next()){
-            qDebug()<<query.value(1);
             editName->setText(query.value(0).toString());
             double tt = query.value(1).toDouble();
             editCost->setText(QString::number(tt,'f',2));
@@ -89,7 +88,7 @@ void MedicalServiceForm::editRecord()
             line += "UPDATE medicalservice SET medicalservicename = '";
             line += editName->text().toUtf8();
             line += "', cost = '";
-            line += editCost->text();
+            line += editCost->text().toDouble();
             line += "' WHERE medicalserviceid = '";
             line += indexTemp;
             line += "'";
@@ -119,7 +118,7 @@ void MedicalServiceForm::editRecord()
                     line += "', '";
                     line += editName->text().toUtf8();
                     line += "', '";
-                    line += editCost->text();
+                    line += editCost->text().toDouble();
                     line += "')";
                     line += "\r\n";
                     stream<<line;

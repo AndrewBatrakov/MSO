@@ -24,6 +24,8 @@ private slots:
 private:
     QLabel *labelName;
     LineEdit *editName;
+    QLabel *labelCost;
+    LineEdit *editCost;
 
     QPushButton *saveButton;
     QPushButton *cancelButton;

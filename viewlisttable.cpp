@@ -12,6 +12,7 @@
 #include "treatmentform.h"
 #include "typeofworkform.h"
 #include "searchform.h"
+#include "tableenterdelegate.h"
 
 ViewListTable::ViewListTable(QString idTable, QString nameTable, QWidget *parent) :
     QDialog(parent)
@@ -163,7 +164,11 @@ void ViewListTable::viewTemplateTable(QString)
     tableView->setItemDelegate(new QSqlRelationalDelegate(this));
     tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+//    if(tableName == "employee"){
+
+//        tableView->setItemDelegate(new TableEnterDelegate(this));
+//    }
 }
 
 void ViewListTable::done(int res)

@@ -401,7 +401,7 @@ void MainWindow::createMenu()
     referenceMenu->addSeparator();
     referenceMenu->addAction(preparationAction);
     referenceMenu->addAction(medicalService);
-    referenceMenu->addAction(treatmentAction);
+    //referenceMenu->addAction(treatmentAction);
     referenceMenu->addAction(diseaseAction);
     referenceMenu->addAction(typeOfWorkAction);
     referenceMenu->addAction(locationActon);
@@ -413,8 +413,8 @@ void MainWindow::createMenu()
     documentMenu->addAction(preparationDocAction);
     documentMenu->addSeparator();
 
-    //reportMenu = menuBar()->addMenu(tr("Reports"));
-    //reportMenu->addSeparator();
+    reportMenu = menuBar()->addMenu(tr("Reports"));
+    reportMenu->addSeparator();
 
     serviceMenu = menuBar()->addMenu(tr("Service"));
     //serviceMenu->addAction(prefixAction);

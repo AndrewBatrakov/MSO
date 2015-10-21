@@ -17,7 +17,8 @@ HEADERS += \
     $$PWD/putbase.h \
     $$PWD/smtpform.h \
     $$PWD/viewlisttable.h \
-    $$PWD/searchform.h
+    $$PWD/searchform.h \
+    $$PWD/tableenterdelegate.h
 
 SOURCES += \
     $$PWD/update.cpp \
@@ -38,4 +39,5 @@ SOURCES += \
     $$PWD/putbase.cpp \
     $$PWD/smtpform.cpp \
     $$PWD/viewlisttable.cpp \
-    $$PWD/searchform.cpp
+    $$PWD/searchform.cpp \
+    $$PWD/tableenterdelegate.cpp

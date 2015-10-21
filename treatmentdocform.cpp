@@ -2,6 +2,10 @@
 #include <QtSql>
 #include "fordelete.h"
 #include "numprefix.h"
+#include "employeeform.h"
+#include "viewlisttable.h"
+#include "medicalserviceform.h"
+#include "preparationform.h"
 
 TreatmentDocForm::TreatmentDocForm(QString id, QWidget *parent, bool onlyForRead) : QDialog(parent)
 {
@@ -36,6 +40,16 @@ TreatmentDocForm::TreatmentDocForm(QString id, QWidget *parent, bool onlyForRead
     readSettings();
     indexTemp = id;
 
+    labelItogoService = new QLabel(tr("Itogo Medical Service:"));
+    labelItogoService->setStyleSheet("QLabel {font: Bold}");
+    editItogoService = new QLabel;
+    editItogoService->setStyleSheet("QLabel {font: Bold}");
+
+    labelItogoPreparation = new QLabel(tr("Itogo Preparation:"));
+    labelItogoPreparation->setStyleSheet("QLabel {font: Bold}");
+    editItogoPreparation = new QLabel;
+    editItogoPreparation->setStyleSheet("QLabel {font: Bold}");
+
     labelNumberDoc = new QLabel(tr("Number:"));
     editNumberDoc = new LineEdit;
     editNumberDoc->setReadOnly(true);
@@ -46,7 +60,6 @@ TreatmentDocForm::TreatmentDocForm(QString id, QWidget *parent, bool onlyForRead
     labelDateDoc->setBuddy(editDateDoc);
     editDateDoc->setCalendarPopup(true);
     editDateDoc->setDate(QDate::currentDate());
-
 
     labelFIO = new QLabel(tr("FIO:"));
     editFIO = new LineEdit;
@@ -124,17 +137,17 @@ TreatmentDocForm::TreatmentDocForm(QString id, QWidget *parent, bool onlyForRead
     QPushButton *addTableButton = new QPushButton(tr("Add"));
     QPixmap pixAdd(":/add.png");
     addTableButton->setIcon(pixAdd);
-    //connect(addTableButton,SIGNAL(clicked()),this,SLOT(addRecordOfTable()));
+    connect(addTableButton,SIGNAL(clicked()),this,SLOT(addRecordOfTable()));
 
     QPushButton *deleteTableButton = new QPushButton(tr("Delete"));
     QPixmap pixDelete(":/delete.png");
     deleteTableButton->setIcon(pixDelete);
-    //connect(deleteRecordButton,SIGNAL(clicked()),this,SLOT(deleteRecordOfTable()));
+    connect(deleteTableButton,SIGNAL(clicked()),this,SLOT(deleteRecordOfTable()));
 
     QPushButton *editTableButton = new QPushButton(tr("Edit"));
     QPixmap pixEdit(":/edit.png");
     editTableButton->setIcon(pixEdit);
-    //connect(editRecordButton,SIGNAL(clicked()),this,SLOT(editRecordOfTable()));
+    connect(editTableButton,SIGNAL(clicked()),this,SLOT(deleteRecordOfTable()));
 
     QHBoxLayout *buttonTableBox = new QHBoxLayout;
     buttonTableBox->addWidget(addTableButton);
@@ -154,47 +167,31 @@ TreatmentDocForm::TreatmentDocForm(QString id, QWidget *parent, bool onlyForRead
     //*****************************************************
     //Medical Service
     //*****************************************************
-    QTableView *medicalServiceWidget = new QTableView;
-    QSqlRelationalTableModel *medicalServiceModel = new QSqlRelationalTableModel;
-    medicalServiceModel->setTable("treatmentservice");
-    medicalServiceModel->setFilter(filterID);
-    medicalServiceModel->setHeaderData(2,Qt::Horizontal,tr("Medical Service"));
-    medicalServiceModel->setRelation(2,QSqlRelation("medicalservice","medicalserviceid","medicalservicename"));
-    medicalServiceModel->select();
-    medicalServiceWidget->setModel(medicalServiceModel);
-    medicalServiceWidget->setColumnHidden(0,true);
-    medicalServiceWidget->setColumnHidden(1,true);
+    medicalServiceWidget = new QTableWidget(0,4);
+    medicalServiceWidget->setHorizontalHeaderLabels(QStringList()<<tr("Name")<<tr("Time")<<tr("Cost")<<tr("Summa"));
+    QHeaderView *headMS = medicalServiceWidget->horizontalHeader();
     medicalServiceWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     medicalServiceWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-    medicalServiceWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //medicalServiceWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     medicalServiceWidget->setAlternatingRowColors(true);
     medicalServiceWidget->resizeColumnsToContents();
-    //educationWidget->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-    QHeaderView *headMedicalService = medicalServiceWidget->horizontalHeader();
-    headMedicalService->setStretchLastSection(true);
+    //tableWidget->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+    headMS->setStretchLastSection(true);
 
-    QTableView *prepatationWidget = new QTableView;
-    QSqlRelationalTableModel *prepatationModel = new QSqlRelationalTableModel;
-    prepatationModel->setTable("treatmentpreparation");
-    prepatationModel->setFilter(filterID);
-    prepatationModel->setHeaderData(2,Qt::Horizontal,tr("Preparation"));
-    prepatationModel->setRelation(2,QSqlRelation("preparation","preparationid","preparationname"));
-    prepatationModel->select();
-    prepatationWidget->setModel(prepatationModel);
-    prepatationWidget->setColumnHidden(0,true);
-    prepatationWidget->setColumnHidden(1,true);
-    prepatationWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-    prepatationWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-    prepatationWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    prepatationWidget->setAlternatingRowColors(true);
-    prepatationWidget->resizeColumnsToContents();
-    //educationWidget->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-    QHeaderView *headPrepatation = prepatationWidget->horizontalHeader();
-    headPrepatation->setStretchLastSection(true);
+    preparationWidget = new QTableWidget(0,4);
+    preparationWidget->setHorizontalHeaderLabels(QStringList()<<tr("Name")<<tr("Number")<<tr("Cost")<<("Summa"));
+    QHeaderView *headP = preparationWidget->horizontalHeader();
+    preparationWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    preparationWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    //preparationWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    preparationWidget->setAlternatingRowColors(true);
+    preparationWidget->resizeColumnsToContents();
+    //tableWidget->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+    headP->setStretchLastSection(true);
 
-    QTabWidget *tabWidget = new QTabWidget;
+    tabWidget = new QTabWidget;
     tabWidget->addTab(medicalServiceWidget,tr("Medical Service"));
-    tabWidget->addTab(prepatationWidget,tr("Preparation"));
+    tabWidget->addTab(preparationWidget,tr("Preparation"));
 
     if(indexTemp != ""){
         QSqlQuery query;
@@ -204,8 +201,49 @@ TreatmentDocForm::TreatmentDocForm(QString id, QWidget *parent, bool onlyForRead
         while(query.next()){
             editFIO->setText(query.value(0).toString());
             editDateDoc->setDate(query.value(1).toDate());
+
+            int row = 0;
+            QSqlQuery queryMedicalService;
+            queryMedicalService.prepare("SELECT "
+                                        "(SELECT ms.medicalservicename, ms.cost FROM medicalservice AS ms WHERE ms.medicalserviceid = ts.medicalserviceid) "
+                                        " FROM treatmentservice AS ts WHERE ts.treatmentdocid = :id");
+            queryMedicalService.bindValue(":id",indexTemp);
+            queryMedicalService.exec();
+            while(queryMedicalService.next()){
+                medicalServiceWidget->insertRow(row);
+                QTableWidgetItem *item = new QTableWidgetItem;
+                medicalServiceWidget->setItem(row,0,item);
+                medicalServiceWidget->item(row,0)->setText(queryMedicalService.value(0).toString());
+                medicalServiceWidget->item(row,1)->setText(queryMedicalService.value(1).toString());
+                ++row;
+            }
+            row = 0;
+            QSqlQuery queryPreparation;
+            queryPreparation.prepare("SELECT "
+                                        "(SELECT pr.preparationname, pr.cost FROM preparation AS pr WHERE pr.preparationid = ts.preparationid) "
+                                        " FROM treatmentpreparation AS ts WHERE ts.treatmentdocid = :id");
+            queryPreparation.bindValue(":id",indexTemp);
+            queryPreparation.exec();
+            while(queryPreparation.next()){
+                preparationWidget->insertRow(row);
+                QTableWidgetItem *item = new QTableWidgetItem;
+                preparationWidget->setItem(row,0,item);
+                preparationWidget->item(row,0)->setText(queryPreparation.value(0).toString());
+                preparationWidget->item(row,1)->setText(queryPreparation.value(1).toString());
+                ++row;
+            }
         }
     }
+
+    QHBoxLayout *itogoServiceLayout = new QHBoxLayout;
+    itogoServiceLayout->addWidget(labelItogoService);
+    itogoServiceLayout->addWidget(editItogoService);
+    itogoServiceLayout->addStretch();
+
+    QHBoxLayout *itogoPreparationLayout = new QHBoxLayout;
+    itogoPreparationLayout->addWidget(labelItogoPreparation);
+    itogoPreparationLayout->addWidget(editItogoPreparation);
+    itogoPreparationLayout->addStretch();
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(labelNumberDoc,0,0);
@@ -222,10 +260,28 @@ TreatmentDocForm::TreatmentDocForm(QString id, QWidget *parent, bool onlyForRead
     mainLayout->addWidget(editPost,4,1,1,3);
     mainLayout->addLayout(buttonTableBox,5,0,1,4);
     mainLayout->addWidget(tabWidget,6,0,1,4);
+    mainLayout->addLayout(itogoServiceLayout,7,3);
+    mainLayout->addLayout(itogoPreparationLayout,8,3);
     if(!onlyForRead){
-        mainLayout->addWidget(buttonBox,7,3);
+        mainLayout->addWidget(buttonBox,9,3);
         editFIO->selectAll();
     }
+
+    //запрещаем редактирование столбца
+    medicalServiceWidget->setItemDelegateForColumn(0, new NonEditTableColumnDelegate());
+    medicalServiceWidget->setColumnWidth(0,200);
+    medicalServiceWidget->setItemDelegateForColumn(2, new NonEditTableColumnDelegate());
+    medicalServiceWidget->setColumnWidth(2,75);
+    medicalServiceWidget->setItemDelegateForColumn(3, new NonEditTableColumnDelegate());
+    connect(medicalServiceWidget,SIGNAL(cellChanged(int,int)),this,SLOT(changeItemService(int,int)));
+
+    //запрещаем редактирование столбца
+    preparationWidget->setItemDelegateForColumn(0, new NonEditTableColumnDelegate());
+    preparationWidget->setColumnWidth(0,200);
+    preparationWidget->setItemDelegateForColumn(2, new NonEditTableColumnDelegate());
+    preparationWidget->setColumnWidth(2,75);
+    preparationWidget->setItemDelegateForColumn(3, new NonEditTableColumnDelegate());
+    connect(preparationWidget,SIGNAL(cellChanged(int,int)),this,SLOT(changeItemPreparation(int,int)));
 
     setLayout(mainLayout);
 
@@ -349,22 +405,51 @@ void TreatmentDocForm::writeSettings()
 
 void TreatmentDocForm::addEmpRecord()
 {
-
+    EmployeeForm openForm("",this,false);
+    openForm.exec();
+    if(openForm.rowOut() != ""){
+        QSqlQuery query;
+        query.prepare("SELECT employeename FROM employee WHERE employeeid = :id");
+        query.bindValue(":id",openForm.rowOut());
+        query.exec();
+        query.next();
+        editFIO->setText(query.value(0).toString());
+    }
 }
 
 void TreatmentDocForm::seeEmpRecord()
 {
-
+    QSqlQuery query;
+    query.prepare("SELECT employeeid FROM employee WHERE employeename = :name");
+    query.bindValue(":name",editFIO->text());
+    query.exec();
+    while(query.next()){
+        EmployeeForm openForm(query.value(0).toString(),this,true);
+        openForm.exec();
+    }
 }
 
 void TreatmentDocForm::listEmpRecord()
 {
-
+    QSqlQuery query;
+    query.prepare("SELECT employeeid FROM employee WHERE employeename = :name");
+    query.bindValue(":name",editFIO->text());
+    query.exec();
+    query.next();
+    ViewListTable listTemp(query.value(0).toString(),"employee",this);
+    listTemp.exec();
+    if(listTemp.rowOut() != ""){
+        QSqlQuery query;
+        query.prepare("SELECT employeename FROM employee WHERE employeeid = :id");
+        query.bindValue(":id",listTemp.rowOut());
+        query.exec();
+        query.next();
+        editFIO->setText(query.value(0).toString());
+    }
 }
 
 void TreatmentDocForm::fioChange()
 {
-    qDebug()<<"sql";
     QSqlQuery query;
     query.prepare("SELECT (SELECT org.organizationname FROM organization AS org WHERE org.organizationid = emp.organizationid), "
                   "(SELECT sub.subdivisionname FROM subdivision AS sub WHERE sub.subdivisionid = emp.subdivisionid), "
@@ -375,4 +460,109 @@ void TreatmentDocForm::fioChange()
     editOrg->setText(query.value(0).toString());
     editSub->setText(query.value(1).toString());
     editPost->setText(query.value(2).toString());
+}
+
+void TreatmentDocForm::addRecordOfTable()
+{
+    if(!editFIO->text().isEmpty()){
+        NumPrefix numPrefix(this);
+        indexTemp = numPrefix.getPrefix("treatmentdoc");
+        if(indexTemp == ""){
+            close();
+        }
+        editNumberDoc->setText(indexTemp);
+
+        int row = medicalServiceWidget->rowCount();
+
+        if(medicalServiceWidget->isVisible()){
+            ViewListTable listTemp("","medicalservice",this);
+            listTemp.exec();
+            if(listTemp.rowOut() != ""){
+                QSqlQuery query;
+                query.prepare("SELECT medicalservicename, cost FROM medicalservice WHERE medicalserviceid = :id");
+                query.bindValue(":id",listTemp.rowOut());
+                query.exec();
+                query.next();
+                medicalServiceWidget->insertRow(row);
+                QTableWidgetItem *item = new QTableWidgetItem;
+                medicalServiceWidget->setItem(row,0,item);
+                medicalServiceWidget->item(row,0)->setText(query.value(0).toString());
+                QTableWidgetItem *item2 = new QTableWidgetItem;
+                medicalServiceWidget->setItem(row,2,item2);
+                double column2 = query.value(1).toDouble();
+                medicalServiceWidget->item(row,2)->setText(QString::number(column2,'f',2));
+            }
+
+        }
+
+        row = preparationWidget->rowCount();
+        if(preparationWidget->isVisible()){
+            ViewListTable listTemp("","preparation",this);
+            listTemp.exec();
+            if(listTemp.rowOut() != ""){
+                QSqlQuery query;
+                query.prepare("SELECT preparationname, cost FROM preparation WHERE preparationid = :id");
+                query.bindValue(":id",listTemp.rowOut());
+                query.exec();
+                query.next();
+                preparationWidget->insertRow(row);
+                QTableWidgetItem *item = new QTableWidgetItem;
+                preparationWidget->setItem(row,0,item);
+                preparationWidget->item(row,0)->setText(query.value(0).toString());
+                QTableWidgetItem *item2 = new QTableWidgetItem;
+                preparationWidget->setItem(row,2,item2);
+                double column2 = query.value(1).toDouble();
+                preparationWidget->item(row,2)->setText(QString::number(column2,'f',2));
+            }
+
+        }
+    }else{
+        QMessageBox::warning(this,QObject::tr("Attention!!!"),tr("FIO don't be empty!"));
+    }
+}
+
+void TreatmentDocForm::deleteRecordOfTable()
+{
+
+}
+
+void TreatmentDocForm::editRecordOfTable()
+{
+
+}
+
+void TreatmentDocForm::changeItemService(int row, int column)
+{
+    if(column == 1){
+        QTableWidgetItem *item3 = new QTableWidgetItem;
+        medicalServiceWidget->setItem(row,3,item3);
+        double column1 = medicalServiceWidget->item(row,1)->text().toDouble();
+        double column2 = medicalServiceWidget->item(row,2)->text().toDouble();
+
+        medicalServiceWidget->item(row,3)->setText(QString::number(column1 * column2,'f',2));
+        double itog = 0;
+        for(int i = 0;i < medicalServiceWidget->rowCount(); ++i){
+            itog = itog + medicalServiceWidget->item(i,3)->text().toDouble();
+
+        }
+        editItogoService->setText(QString::number(itog,'f',2));
+    }
+}
+
+void TreatmentDocForm::changeItemPreparation(int row, int column)
+{
+    if(column == 1){
+        QTableWidgetItem *item3 = new QTableWidgetItem;
+        preparationWidget->setItem(row,3,item3);
+        double column1 = preparationWidget->item(row,1)->text().toDouble();
+        double column2 = preparationWidget->item(row,2)->text().toDouble();
+
+        preparationWidget->item(row,3)->setText(QString::number(column1 * column2,'f',2));
+        double itog = 0;
+        for(int i = 0;i < preparationWidget->rowCount(); ++i){
+            itog = itog + preparationWidget->item(i,3)->text().toDouble();
+
+        }
+        editItogoPreparation->setText(QString::number(itog,'f',2));
+    }
 }

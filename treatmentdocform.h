@@ -5,6 +5,18 @@
 #include "lineedit.h"
 #include <QtSql>
 
+class NonEditTableColumnDelegate : public QItemDelegate
+{
+    Q_OBJECT
+public:
+    NonEditTableColumnDelegate(QObject * parent = 0) : QItemDelegate(parent) {}
+    virtual QWidget * createEditor ( QWidget *, const QStyleOptionViewItem &,
+                                     const QModelIndex &) const
+    {
+        return 0;
+    }
+};
+
 class TreatmentDocForm : public QDialog
 {
     Q_OBJECT
@@ -25,6 +37,13 @@ private slots:
     void seeEmpRecord();
     void listEmpRecord();
 
+    void addRecordOfTable();
+    void deleteRecordOfTable();
+    void editRecordOfTable();
+
+    void changeItemService(int, int);
+    void changeItemPreparation(int, int);
+
     void fioChange();
 
 private:
@@ -40,13 +59,18 @@ private:
     LineEdit *editSub;
     QLabel *labelPost;
     LineEdit *editPost;
+    QLabel *labelItogoService;
+    QLabel *editItogoService;
+    QLabel *labelItogoPreparation;
+    QLabel *editItogoPreparation;
 
     QPushButton *saveButton;
     QPushButton *cancelButton;
     QDialogButtonBox *buttonBox;
 
-    QTableView *tableView;
-    QSqlRelationalTableModel *templateModel;
+    QTableWidget *medicalServiceWidget;
+    QTableWidget *preparationWidget;
+    QTabWidget *tabWidget;
 
     QString indexTemp;
     QFile exchangeFile;

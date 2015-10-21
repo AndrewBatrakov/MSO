@@ -90,7 +90,7 @@ private:
     QMenu *documentMenu;
     QAction *preparationDocAction;
 
-    //QMenu *reportMenu;
+    QMenu *reportMenu;
 
     QMenu *serviceMenu;
     //QAction *ademantAction;
