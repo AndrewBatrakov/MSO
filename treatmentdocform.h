@@ -73,6 +73,7 @@ private:
     QTabWidget *tabWidget;
 
     QString indexTemp;
+
     QFile exchangeFile;
 };
 

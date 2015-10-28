@@ -21,6 +21,8 @@ private slots:
     void readSettings();
     void writeSettings();
 
+    void costChange();
+
 private:
     QLabel *labelName;
     LineEdit *editName;

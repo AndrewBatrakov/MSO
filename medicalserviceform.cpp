@@ -20,6 +20,7 @@ MedicalServiceForm::MedicalServiceForm(QString id, QWidget *parent, bool onlyFor
     editCost = new LineEdit;
     QRegExp regCost("^([1-9][0-9]*|0)(\\.|,)[0-9]{2}");
     editCost->setValidator(new QRegExpValidator(regCost,this));
+    connect(editCost,SIGNAL(textChanged(QString)),this,SLOT(costChange()));
 
     saveButton = new QPushButton(tr("Save"));
     connect(saveButton,SIGNAL(clicked()),this,SLOT(editRecord()));
@@ -177,3 +178,9 @@ void MedicalServiceForm::writeSettings()
     settings.setValue("MedicalService", saveGeometry());
 }
 
+void MedicalServiceForm::costChange()
+{
+    QString tt = editCost->text();
+    tt.replace(QString(","), QString("."));
+    editCost->setText(tt);
+}

@@ -10,7 +10,7 @@ QString NumPrefix::getPrefix(QString tableName)
 {
     QString returnString;
 
-    QSettings settings("AO_Batrakov_Inc.", "Yarn");
+    QSettings settings("AO_Batrakov_Inc.", "MSO");
     QString  prefName= settings.value("numprefix").toString();
     if(prefName == ""){
         QMessageBox::warning(this,tr("Attention!"),tr("Insert Prefix Number!!!"));
