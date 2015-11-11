@@ -44,6 +44,8 @@ private slots:
     void changeItemService(int, int);
     void changeItemPreparation(int, int);
 
+    void saveRecord();
+
     void fioChange();
 
 private:
@@ -73,6 +75,8 @@ private:
     QTabWidget *tabWidget;
 
     QString indexTemp;
+    QString addIntoTabeleMS;
+    QString addIntoTabeleTD;
 
     QFile exchangeFile;
 };

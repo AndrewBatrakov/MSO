@@ -829,7 +829,7 @@ void MainWindow::editRecordOfTable()
             PreparationForm form(iD, this, false);
             form.exec();
         }else if(stringVar == "treatmentdoc"){
-            QString iD = record.value("treatmendoctid").toString();
+            QString iD = record.value("treatmentdocid").toString();
             TreatmentDocForm form(iD, this, false);
             form.exec();
         }

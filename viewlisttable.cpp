@@ -128,8 +128,13 @@ void ViewListTable::viewTemplateTable(QString)
         }
     }else if(tableName == "employee"){
         templateModel->setHeaderData(1,Qt::Horizontal,tr("FIO"));
-        templateModel->setRelation(2,QSqlRelation("subdivision","subdivisionid","subdivisionname"));
-        templateModel->setRelation(3,QSqlRelation("post","postid","postname"));
+        templateModel->setRelation(2,QSqlRelation("organization","organizationid","organizationname"));
+        templateModel->setHeaderData(2,Qt::Horizontal,tr("Organization"));
+        templateModel->setRelation(3,QSqlRelation("subdivision","subdivisionid","subdivisionname"));
+        templateModel->setHeaderData(3,Qt::Horizontal,tr("Subdivision"));
+        templateModel->setRelation(4,QSqlRelation("post","postid","postname"));
+        templateModel->setHeaderData(4,Qt::Horizontal,tr("Post"));
+        templateModel->setHeaderData(5,Qt::Horizontal,tr("Birthday"));
         labelName = "Employees";
         if(setFilter){
             templateModel->setFilter(QString("employeename LIKE '%%1%'").arg(filterTable));
@@ -286,10 +291,10 @@ void ViewListTable::editRecord()
     }else if(tableName == "subdivision"){
         SubdivisionForm listFrom(idList,this,false);
         listFrom.exec();
-//    }else if(tableName == "legalacts"){
-//        LegalAct listFrom(idList,this,false);
-//        listFrom.exec();
-//    }else if(tableName == "safetyreq"){
+    }else if(tableName == "employee"){
+        EmployeeForm listFrom(idList,this,false);
+        listFrom.exec();
+    //}else if(tableName == "safetyreq"){
 //        SafetyRequirements listFrom(idList,this,false);
 //        listFrom.exec();
 //    }else if(tableName == "testtask"){
